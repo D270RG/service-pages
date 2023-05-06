@@ -1,0 +1,12 @@
+$baseColor: rgb(0, 0, 0);
+$textColor: rgb(239, 239, 239);
+$activeColor: rgb(170, 177, 106);
+.nav-link {
+	background-color: transparent;
+	background-color: $baseColor;
+	color: $textColor !important;
+	border-color: $baseColor;
+	&.active {
+		background-color: $activeColor;
+	}
+}

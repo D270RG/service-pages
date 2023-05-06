@@ -1,0 +1,15 @@
+.appHeaderContainer {
+	height: 30px;
+	backdrop-filter: blur(4px);
+	font-size: larger;
+	color: black;
+	position: sticky;
+	top: 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	height: 50px;
+}
+.cart-button {
+	float: left;
+}
