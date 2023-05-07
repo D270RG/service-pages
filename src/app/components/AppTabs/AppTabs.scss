@@ -10,3 +10,17 @@ $activeColor: rgb(83, 83, 83);
 		background-color: $activeColor;
 	}
 }
+.nav-item {
+	> a {
+		white-space: nowrap;
+	}
+}
+.spinner-cont {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 100px;
+}
+.tabs-container {
+	flex-wrap: nowrap !important;
+}

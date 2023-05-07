@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
-import React, { Component, FunctionComponent } from 'react';
+import React, { Component, FunctionComponent, useEffect, useState } from 'react';
 
-function PhoneRepair() {
-	return <div>PhoneRepair</div>;
+function PhoneRepair(props: { translate: any }) {
+	return <div>PhoneRepairContent</div>;
 }
 
 export default PhoneRepair as FunctionComponent;

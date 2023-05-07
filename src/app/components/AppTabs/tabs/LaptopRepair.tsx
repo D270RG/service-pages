@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
-function LaptopRepair() {
-	return <div>LaptopRepair</div>;
+function LaptopRepair(props: { translate: any }) {
+	return <div>LaptopRepairContent</div>;
 }
 
 export default LaptopRepair as FunctionComponent;

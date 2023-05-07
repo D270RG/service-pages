@@ -1,4 +1,13 @@
+@import '~bootstrap/scss/bootstrap-grid.scss';
 .main {
 	width: 100vw;
 	height: 100vh;
+}
+.paddedPage {
+	@media screen and (min-width: map-get($grid-breakpoints,sm)) {
+		padding-left: 127px;
+		padding-right: 127px;
+	}
+	padding-left: $spacer;
+	padding-right: $spacer;
 }
