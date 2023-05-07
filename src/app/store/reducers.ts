@@ -26,6 +26,9 @@ export interface ICartItem {
 	amount: number;
 	descriptionId: string;
 }
+export interface IPriceList {
+	[path: string]: ICartItem[];
+}
 export const cartAdapter = createEntityAdapter<ICartItem>({
 	// Assume IDs are stored in a field other than `item.id`
 	selectId: (item) => item.id,

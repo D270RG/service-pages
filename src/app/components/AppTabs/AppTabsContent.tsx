@@ -6,9 +6,9 @@ import './AppTabs.scss';
 import Loading from '@/app/elements/loading/loading';
 import { Languages } from 'p@/common-types/common-types';
 import translations from 'p@/descriptions/translations.json';
-import services from 'p@/descriptions/services.json';
 import store from '@/app/store/store';
-import { cartSlice } from '@/app/store/reducers';
+import { cartSlice, IPriceList } from '@/app/store/reducers';
+import PriceTable from '@/app/elements/priceTable/priceTable';
 
 function AppTabsContent() {
 	const [tabs, setTabs] = useState<JSX.Element[]>([]);
@@ -23,31 +23,78 @@ function AppTabsContent() {
 		//Here will be pricelist fetch
 		const examplePriceRequest = {}; //GET with all TabMap keys
 		const examplePriceListResponse = {
-			'first-help': {
-				id: '123',
-				type: 'Apple',
-				price: 10000,
-				currency: 'rub',
-				amount: 1,
-				descriptionId: '123',
-			},
-			'laptop-repair': {
-				id: '456',
-				type: 'Windows',
-				price: 1000,
-				currency: 'rub',
-				amount: 1,
-				descriptionId: '456',
-			},
-			'phone-repair': {
-				id: '789',
-				type: 'Android',
-				price: 100,
-				currency: 'rub',
-				amount: 1,
-				descriptionId: '789',
-			},
-		};
+			'first-help': [
+				{ id: '123', type: 'Repair', price: 10, currency: 'rub', amount: 1, descriptionId: '123' },
+				{
+					id: '1234',
+					type: 'Repair',
+					price: 100,
+					currency: 'rub',
+					amount: 1,
+					descriptionId: '1234',
+				},
+				{
+					id: '12345',
+					type: 'Repair',
+					price: 1000,
+					currency: 'rub',
+					amount: 1,
+					descriptionId: '12345',
+				},
+			],
+			'laptop-repair': [
+				{
+					id: '456',
+					type: 'Windows',
+					price: 1000,
+					currency: 'rub',
+					amount: 1,
+					descriptionId: '456',
+				},
+				{
+					id: '4567',
+					type: 'Windows',
+					price: 100000,
+					currency: 'rub',
+					amount: 1,
+					descriptionId: '4567',
+				},
+			],
+			'phone-repair': [
+				{
+					id: '789',
+					type: 'Android',
+					price: 300,
+					currency: 'rub',
+					amount: 1,
+					descriptionId: '789',
+				},
+				{
+					id: '78910',
+					type: 'Android',
+					price: 200,
+					currency: 'rub',
+					amount: 1,
+					descriptionId: '78910',
+				},
+				{
+					id: '7891011',
+					type: 'Android',
+					price: 11,
+					currency: 'rub',
+					amount: 1,
+					descriptionId: '7891011',
+				},
+				{
+					id: '789101112',
+					type: 'Android',
+					price: 10000,
+					currency: 'rub',
+					amount: 1,
+					descriptionId: '789101112',
+				},
+			],
+		} as unknown as IPriceList;
 
 		TabMap.forEach(
 			(
@@ -74,15 +121,9 @@ function AppTabsContent() {
 								)}
 								<ComponentValue translate={translations[Languages.ru].tabs[pathKey]} />
 								{examplePriceListResponse.hasOwnProperty(pathKey) && (
-									<Button
-										className='my-3 btn btn-dark'
-										onClick={() => {
-											store.dispatch(
-												cartSlice.actions.addItem({ cartItem: examplePriceListResponse[pathKey] })
-											);
-										}}>
-										{translations[Languages.ru].general.order}
-									</Button>
+									<PriceTable
+										priceInfo={examplePriceListResponse}
+										path={pathKey}></PriceTable>
 								)}
 								{/*/Tab Rendering*/}
 							</React.Suspense>

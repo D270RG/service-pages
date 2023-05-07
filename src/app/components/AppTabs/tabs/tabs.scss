@@ -15,9 +15,33 @@
 }
 //Cart
 .cart-entry-container {
+	$margin: 1em;
 	width: 100%;
+	text-overflow: ellipsis;
 	margin-bottom: 10px;
 	border-radius: 15px;
 	color: white;
 	background-color: black;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	padding: $margin/2;
+	> .typeContainer {
+		margin: $margin;
+	}
+	> .descriptionContainer {
+		padding: $margin;
+		overflow: hidden;
+		flex-grow: 1;
+		justify-content: start;
+		> .description {
+			max-height: 75px;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+	}
+	> .priceContainer {
+		margin-right: $margin;
+	}
 }

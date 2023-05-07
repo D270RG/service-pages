@@ -1,13 +1,18 @@
 $baseColor: rgb(0, 0, 0);
 $textColor: rgb(239, 239, 239);
-$activeColor: rgb(83, 83, 83);
+$activeColor: rgb(234, 234, 234);
 .nav-link {
 	background-color: transparent;
-	background-color: $baseColor;
-	color: $textColor !important;
+	border-bottom: 2px solid;
+	color: $baseColor !important;
 	border-color: $baseColor;
+	&:hover {
+		transition-duration: 0.5s;
+		background-color: $activeColor;
+	}
 	&.active {
 		background-color: $activeColor;
+		border-color: red;
 	}
 }
 .nav-item {
@@ -22,5 +27,6 @@ $activeColor: rgb(83, 83, 83);
 	margin: 100px;
 }
 .tabs-container {
-	flex-wrap: nowrap !important;
+	flex-flow: column wrap;
+	overflow: hidden;
 }

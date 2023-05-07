@@ -13,4 +13,3 @@ export enum ServiceType {
 	Windows = 'Windows',
 	Repair = 'Repair',
 }
-export type translateObject = typeof translations;

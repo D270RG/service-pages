@@ -6,15 +6,24 @@ import './AppHeader.scss';
 function AppHeader(props: { logoElement: React.ReactElement; navElement: React.ReactElement }) {
 	return (
 		<div className='appHeaderContainer'>
-			<div className='px-3'>{props.logoElement}</div>
-			<div className='navContainer'>{props.navElement}</div>
 			<Link
-				to='/cart'
-				className='px-3'>
-				<Button className='btn btn-dark'>
-					<i className='bi bi-cart-fill'></i>
-				</Button>
+				to='/home'
+				className='px-3 logo'>
+				{props.logoElement}
 			</Link>
+			<div className='navContainer'>{props.navElement}</div>
+			<div className='px-2 btns-container'>
+				<Button className='btn btn-light dropdown-toggler'>
+					<i class='bi bi-list'></i>
+				</Button>
+				<Link
+					to='/cart'
+					className='ps-1'>
+					<Button className='btn btn-dark'>
+						<i className='bi bi-cart-fill'></i>
+					</Button>
+				</Link>
+			</div>
 		</div>
 	);
 }
