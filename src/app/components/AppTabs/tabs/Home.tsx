@@ -1,7 +1,8 @@
+import TextAnim from '@/app/elements/TextAnim/TextAnim';
 import React, { FunctionComponent } from 'react';
 
 function TabHome() {
-	return <div>TabHome</div>;
+	return <TextAnim text='ЯСВЕТЛЫЙ'></TextAnim>;
 }
 
 export default TabHome as FunctionComponent;
