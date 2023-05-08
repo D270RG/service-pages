@@ -24,7 +24,7 @@ function PriceTable(props: { priceInfo: IPriceList; path: string }) {
 					<td>
 						{serviceEntry.price} {translations[Languages.ru].currencies[serviceEntry.currency]}
 					</td>
-					<td className='d-flex justify-content-center align-items-center flex-row'>
+					<td className='d-flex justify-content-center align-items-center flex-row flex-wrap'>
 						<Button
 							className='m-1 btn btn-dark'
 							disabled={isDisabled}
