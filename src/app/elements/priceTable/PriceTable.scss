@@ -2,6 +2,8 @@
 	width: 100%;
 	border: none;
 	margin-bottom: 20px;
+	table-layout: fixed;
+	max-width: 600px;
 }
 .table thead th {
 	font-weight: bold;
