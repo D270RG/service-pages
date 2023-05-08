@@ -27,6 +27,9 @@
 		"sass": "^1.62.1",
 		"typescript": "5.0.4"
 	},
+	"resolutions": {
+		"@types/react": "17.0.43"
+	},
 	"devDependencies": {
 		"eslint": "^8.40.0",
 		"eslint-plugin-unused-imports": "^2.0.0"
