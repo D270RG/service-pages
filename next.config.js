@@ -9,5 +9,8 @@ module.exports = {
 			},
 		];
 	},
+	experimental: {
+		appDir: true,
+	},
 	optimizeFonts: false,
 };

@@ -1,4 +1,4 @@
-import React, { Component, FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent } from 'react';
 
 function PhoneRepair(props: { translate: any }) {
 	return <div>PhoneRepairContent</div>;

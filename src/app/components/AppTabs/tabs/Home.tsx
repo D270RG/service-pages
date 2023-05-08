@@ -2,14 +2,12 @@ import Flyer from '@/app/elements/flyer/Flyer';
 import Grid from '@/app/elements/grid/Grid';
 import Loading from '@/app/elements/loading/loading';
 import TextAnim from '@/app/elements/TextAnim/TextAnim';
-import translations from 'p@/descriptions/translations.json';
 import Image from 'next/image';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Col, Container, Row, Spinner } from 'react-bootstrap';
+import React, { FunctionComponent } from 'react';
+import { Col, Row } from 'react-bootstrap';
 import r1 from 'p@/r1.png';
 import r2 from 'p@/r2.png';
 import './tabs.scss';
-import { translateObject } from 'p@/common-types/common-types';
 
 function TabHome(props: { translate: any }) {
 	return (

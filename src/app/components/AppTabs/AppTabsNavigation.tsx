@@ -1,7 +1,6 @@
-import path from 'path';
 import React, { useEffect, useState } from 'react';
-import { Col, Container, Dropdown, ListGroup, Nav, Row, Tab, Tabs } from 'react-bootstrap';
-import { Route, Link, Routes, useLocation, BrowserRouter, Navigate } from 'react-router-dom';
+import { Dropdown, Nav, Tab } from 'react-bootstrap';
+import { Link, useLocation } from 'react-router-dom';
 import { TabMap, unrenderedTabs } from './tabs/index';
 import './AppTabs.scss';
 
@@ -31,11 +30,9 @@ function AppTabsNavigation(props: { setDropdownItems: (dropdownItems: JSX.Elemen
 								if (index !== -1) {
 									hiddenNavs.splice(index, 1);
 								}
-								console.log('removing', entry.target.id, hiddenNavs);
 							} else {
 								//add to dropdown
 								hiddenNavs.push(entry.target.id);
-								console.log('adding', entry.target.id, hiddenNavs);
 							}
 							//call dropdown callback
 							props.setDropdownItems(
@@ -62,6 +59,7 @@ function AppTabsNavigation(props: { setDropdownItems: (dropdownItems: JSX.Elemen
 				);
 		});
 		setNavs(navs);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 	return (
 		<div>

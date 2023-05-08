@@ -1,6 +1,6 @@
 import translations from 'p@/descriptions/translations.json';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import store, { RootState } from '@/app/store/store';
+import store from '@/app/store/store';
 import './tabs.scss';
 import { cartSlice, ICartItem } from '@/app/store/reducers';
 import { cartSelectors } from '@/app/store/selectors';

@@ -1,4 +1,4 @@
-import { current, createEntityAdapter, createSlice, configureStore } from '@reduxjs/toolkit';
+import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { Currency, ServiceType } from 'p@/common-types/common-types';
 

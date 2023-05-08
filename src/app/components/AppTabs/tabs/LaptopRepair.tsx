@@ -1,5 +1,4 @@
-import PropTypes from 'prop-types';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent } from 'react';
 
 function LaptopRepair(props: { translate: any }) {
 	return <div>LaptopRepairContent</div>;

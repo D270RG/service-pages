@@ -1,4 +1,4 @@
-import { cartSlice, ICartItem, IPriceList } from '@/app/store/reducers';
+import { cartSlice, IPriceList } from '@/app/store/reducers';
 import React, { useEffect, useState } from 'react';
 import './PriceTable.scss';
 import serviceDescriptions from 'p@/descriptions/serviceDescriptions.json';

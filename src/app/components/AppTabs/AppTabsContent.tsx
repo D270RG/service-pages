@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Container, Row, Tab } from 'react-bootstrap';
+import { Tab } from 'react-bootstrap';
 import { Route, Routes } from 'react-router';
-import { TabMap, unrenderedBuyButtons, unrenderedTabs, unrenderedTitles } from './tabs';
+import { TabMap, unrenderedTitles } from './tabs';
 import './AppTabs.scss';
 import Loading from '@/app/elements/loading/loading';
 import { Languages } from 'p@/common-types/common-types';
 import translations from 'p@/descriptions/translations.json';
-import store from '@/app/store/store';
-import { cartSlice, IPriceList } from '@/app/store/reducers';
+import { IPriceList } from '@/app/store/reducers';
 import PriceTable from '@/app/elements/priceTable/PriceTable';
-import { cartSelectors } from '@/app/store/selectors';
 
 function AppTabsContent() {
 	const [tabs, setTabs] = useState<JSX.Element[]>([]);
