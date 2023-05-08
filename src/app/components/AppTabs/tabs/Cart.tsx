@@ -47,13 +47,15 @@ function TabCart(props: { translate: any }) {
 	}
 	return (
 		<div>
-			{cartItems.length > 0 && (
+			{cartItems.length > 0 ? (
 				<div className='mb-3 d-flex justify-content-between'>
 					<h3>
 						{price} {translations[Languages.ru].currencies[priceCurrency]}
 					</h3>
 					<Button className='btn btn-dark'>Заказать</Button>
 				</div>
+			) : (
+				<h6 className='text-muted'>Корзина пуста</h6>
 			)}
 			{cartItems.map((itemEntry) => {
 				return (
