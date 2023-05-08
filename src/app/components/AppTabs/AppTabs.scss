@@ -11,6 +11,7 @@ $activeColor: rgb(234, 234, 234);
 		background-color: $activeColor;
 	}
 	&.active {
+		transition-duration: 0.5s;
 		background-color: $activeColor;
 		border-color: red;
 	}
@@ -29,4 +30,7 @@ $activeColor: rgb(234, 234, 234);
 .tabs-container {
 	flex-flow: column wrap;
 	overflow: hidden;
+}
+.dropdown {
+	max-width: 30px;
 }

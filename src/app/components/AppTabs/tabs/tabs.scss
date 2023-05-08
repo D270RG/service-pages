@@ -16,6 +16,7 @@
 //Cart
 .cart-entry-container {
 	$margin: 1em;
+	position: relative;
 	width: 100%;
 	text-overflow: ellipsis;
 	margin-bottom: 10px;
@@ -43,5 +44,12 @@
 	}
 	> .priceContainer {
 		margin-right: $margin;
+	}
+}
+.btn-transparent {
+	font-size: 1.5em;
+	color: white;
+	&:hover {
+		color: rgb(172, 172, 172);
 	}
 }

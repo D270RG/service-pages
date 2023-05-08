@@ -2,16 +2,30 @@ import translations from 'p@/descriptions/translations.json';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import store, { RootState } from '@/app/store/store';
 import './tabs.scss';
-import { ICartItem } from '@/app/store/reducers';
+import { cartSlice, ICartItem } from '@/app/store/reducers';
 import { cartSelectors } from '@/app/store/selectors';
 import serviceDescriptions from 'p@/descriptions/serviceDescriptions.json';
 import { ServiceType } from 'p@/common-types/common-types';
+import { Button } from 'react-bootstrap';
 
 function TabCart(props: { translate: any }) {
 	const [cartItems, setCartItems] = useState<ICartItem[]>([]);
+	const [price, setPrice] = useState<number | undefined>(undefined);
+	const [priceCurrency, setPriceCurrency] = useState<string>('');
 	useEffect(() => {
 		setCartItems(cartSelectors.selectAll(store.getState()));
 	}, []);
+	useEffect(() => {
+		let price = 0;
+		let lastPriceCurrency = '';
+		cartItems.forEach((cartItem) => {
+			//Monocurrency only
+			price += cartItem.price;
+			lastPriceCurrency = cartItem.currency;
+		});
+		setPriceCurrency(lastPriceCurrency);
+		setPrice(price);
+	}, [cartItems]);
 	function renderType(type: string): JSX.Element {
 		switch (type) {
 			case ServiceType.Android: {
@@ -33,13 +47,21 @@ function TabCart(props: { translate: any }) {
 	}
 	return (
 		<div>
+			{cartItems.length > 0 && (
+				<div className='mb-3 d-flex justify-content-between'>
+					<h3>
+						{price} {priceCurrency}
+					</h3>
+					<Button className='btn btn-dark'>Заказать</Button>
+				</div>
+			)}
 			{cartItems.map((itemEntry) => {
 				return (
 					<div
 						key={itemEntry.id}
 						className='cart-entry-container'>
 						<div className='typeContainer'>
-							<h3 className=''>{renderType(itemEntry.type)}</h3>
+							<h3 className=''>{renderType(itemEntry.type)} </h3>
 						</div>
 						<div className='d-flex align-items-start flex-column descriptionContainer'>
 							<div>
@@ -54,6 +76,14 @@ function TabCart(props: { translate: any }) {
 								{itemEntry.price} {itemEntry.currency}
 							</h2>
 						</div>
+						<button
+							className='btn btn-transparent'
+							onClick={() => {
+								store.dispatch(cartSlice.actions.removeItem({ id: itemEntry.id }));
+								setCartItems(cartSelectors.selectAll(store.getState()));
+							}}>
+							<i className='bi bi-x-lg'></i>
+						</button>
 					</div>
 				);
 			})}

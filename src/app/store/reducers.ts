@@ -7,7 +7,7 @@ interface AddCartItemPayload {
 	cartItem: ICartItem;
 }
 interface DeleteCartItemPayload {
-	cartItem: ICartItem;
+	id: string;
 }
 interface AmountPlusPayload {
 	id: string;
@@ -46,8 +46,8 @@ export const cartSlice = createSlice({
 			}
 		},
 		removeItem(state, action: PayloadAction<DeleteCartItemPayload>) {
-			if (state.ids.includes(action.payload.cartItem.id)) {
-				cartAdapter.removeOne(state, action.payload.cartItem.id);
+			if (state.ids.includes(action.payload.id)) {
+				cartAdapter.removeOne(state, action.payload.id);
 			}
 		},
 		amountPlus(state, action: PayloadAction<AmountPlusPayload>) {
