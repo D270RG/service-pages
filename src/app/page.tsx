@@ -8,6 +8,7 @@ import Logo from './elements/smallLogo/Logo';
 import { useState } from 'react';
 export default function Main() {
 	const [dropdownItems, setDropdownItems] = useState<JSX.Element[]>([]);
+	if (typeof window === 'undefined') return null;
 	return (
 		<BrowserRouter>
 			<Components.AppHeader
