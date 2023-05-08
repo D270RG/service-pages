@@ -24,28 +24,30 @@ function PriceTable(props: { priceInfo: IPriceList; path: string }) {
 					<td>
 						{serviceEntry.price} {translations[Languages.ru].currencies[serviceEntry.currency]}
 					</td>
-					<td className='d-flex justify-content-center align-items-center flex-row flex-wrap'>
-						<Button
-							className='m-1 btn btn-dark'
-							disabled={isDisabled}
-							onClick={() => {
-								store.dispatch(cartSlice.actions.addItem({ cartItem: serviceEntry }));
-								setDisabledIds(cartSelectors.selectIds(store.getState()) as string[]);
-							}}>
-							{!isDisabled
-								? translations[Languages.ru].general.order
-								: translations[Languages.ru].general.ordered}
-						</Button>
-						{isDisabled && (
+					<td>
+						<div className='d-flex justify-content-center align-items-center flex-row flex-wrap'>
 							<Button
 								className='m-1 btn btn-dark'
+								disabled={isDisabled}
 								onClick={() => {
-									store.dispatch(cartSlice.actions.removeItem({ id: serviceEntry.id }));
+									store.dispatch(cartSlice.actions.addItem({ cartItem: serviceEntry }));
 									setDisabledIds(cartSelectors.selectIds(store.getState()) as string[]);
 								}}>
-								{translations[Languages.ru].general.cancel}
+								{!isDisabled
+									? translations[Languages.ru].general.order
+									: translations[Languages.ru].general.ordered}
 							</Button>
-						)}
+							{isDisabled && (
+								<Button
+									className='m-1 btn btn-dark'
+									onClick={() => {
+										store.dispatch(cartSlice.actions.removeItem({ id: serviceEntry.id }));
+										setDisabledIds(cartSelectors.selectIds(store.getState()) as string[]);
+									}}>
+									{translations[Languages.ru].general.cancel}
+								</Button>
+							)}
+						</div>
 					</td>
 				</tr>
 			);
