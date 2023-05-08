@@ -4,7 +4,7 @@ export enum Languages {
 	en = 'en',
 }
 export enum Currency {
-	rub = 'руб',
+	rub = 'rub',
 	usd = 'usd',
 }
 export enum ServiceType {

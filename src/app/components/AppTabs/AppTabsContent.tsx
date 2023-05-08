@@ -8,7 +8,8 @@ import { Languages } from 'p@/common-types/common-types';
 import translations from 'p@/descriptions/translations.json';
 import store from '@/app/store/store';
 import { cartSlice, IPriceList } from '@/app/store/reducers';
-import PriceTable from '@/app/elements/priceTable/priceTable';
+import PriceTable from '@/app/elements/priceTable/PriceTable';
+import { cartSelectors } from '@/app/store/selectors';
 
 function AppTabsContent() {
 	const [tabs, setTabs] = useState<JSX.Element[]>([]);
@@ -123,7 +124,8 @@ function AppTabsContent() {
 								{examplePriceListResponse.hasOwnProperty(pathKey) && (
 									<PriceTable
 										priceInfo={examplePriceListResponse}
-										path={pathKey}></PriceTable>
+										path={pathKey}
+									/>
 								)}
 								{/*/Tab Rendering*/}
 							</React.Suspense>

@@ -1,7 +1,16 @@
 {
 	"ru": {
 		"general": {
-			"order": "Заказать"
+			"order": "Заказать",
+			"ordered": "Добавлено",
+			"cancel": "Отменить"
+		},
+		"currencies": {
+			"rub": "руб.",
+			"usd": "usd.",
+			"eur": "eur.",
+			"tenge": "тен.",
+			"byn": "бел. руб."
 		},
 		"tabs": {
 			"home": {

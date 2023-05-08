@@ -5,7 +5,7 @@ import './tabs.scss';
 import { cartSlice, ICartItem } from '@/app/store/reducers';
 import { cartSelectors } from '@/app/store/selectors';
 import serviceDescriptions from 'p@/descriptions/serviceDescriptions.json';
-import { ServiceType } from 'p@/common-types/common-types';
+import { Languages, ServiceType } from 'p@/common-types/common-types';
 import { Button } from 'react-bootstrap';
 
 function TabCart(props: { translate: any }) {
@@ -50,7 +50,7 @@ function TabCart(props: { translate: any }) {
 			{cartItems.length > 0 && (
 				<div className='mb-3 d-flex justify-content-between'>
 					<h3>
-						{price} {priceCurrency}
+						{price} {translations[Languages.ru].currencies[priceCurrency]}
 					</h3>
 					<Button className='btn btn-dark'>Заказать</Button>
 				</div>
@@ -73,7 +73,7 @@ function TabCart(props: { translate: any }) {
 						</div>
 						<div className='priceContainer'>
 							<h2>
-								{itemEntry.price} {itemEntry.currency}
+								{itemEntry.price} {translations[Languages.ru].currencies[itemEntry.currency]}
 							</h2>
 						</div>
 						<button
