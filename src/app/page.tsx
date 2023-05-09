@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter } from 'react-router-dom';
 import Logo from './elements/smallLogo/Logo';
 import { useState } from 'react';
+import { TabMapKeys } from './components/AppTabs/tabs';
 export default function Main() {
 	const [dropdownItems, setDropdownItems] = useState<JSX.Element[]>([]);
 	if (typeof window === 'undefined') return null;
@@ -23,9 +24,10 @@ export default function Main() {
 					/>
 				}
 			/>
-			<div className='paddedPage'>
+			<div className='padded-page'>
 				<Components.AppTabsOutlet />
 			</div>
+			<Components.AppFooter tabLinks={TabMapKeys} />
 		</BrowserRouter>
 	);
 }

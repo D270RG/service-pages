@@ -8,7 +8,7 @@ const animFont = localFont({ src: './SkylineBeach.ttf' });
 
 function TextAnim(props: { text: string }) {
 	return (
-		<Container className='text-container'>
+		<Container className='text-container my-5'>
 			<SvgAnim />
 			<div className={animFont.className + ' text'}>
 				<div className='background-container'></div>

@@ -1,0 +1,15 @@
+{
+	"contacts": {
+		"phone": "+123(00)123-45-67",
+		"email": "example@mail.com",
+		"address": "ул.Лесная 1, г.Светлый, Калининградская Область",
+		"postal": "222000"
+	},
+	"social": {
+		"vk": "vk.com",
+		"telegram": "telegram.com",
+		"instagram": "instagram.com",
+		"facebook": "facebook.com"
+	},
+	"legal": "ИП Иванов Иван Иванович, ИНН 123456123456"
+}

@@ -55,7 +55,7 @@ function PriceTable(props: { priceInfo: IPriceList; path: string }) {
 		return prices;
 	}
 	return (
-		<table className='table'>
+		<table className='table my-3'>
 			<thead>
 				<tr>
 					<th>Название</th>

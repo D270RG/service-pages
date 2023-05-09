@@ -14,6 +14,7 @@ export const TabMap: Map<string, React.LazyExoticComponent<React.FunctionCompone
 	['laptop-repair', LaptopRepair],
 	['phone-repair', PhoneRepair],
 ]);
+export const TabMapKeys: string[] = Array.from(TabMap.keys());
 
 export const unrenderedTabs = {
 	home: true,

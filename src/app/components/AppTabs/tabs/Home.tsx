@@ -5,13 +5,13 @@ import TextAnim from '@/app/elements/TextAnim/TextAnim';
 import Image from 'next/image';
 import React, { FunctionComponent } from 'react';
 import { Col, Row } from 'react-bootstrap';
-import r1 from 'p@/r1.png';
-import r2 from 'p@/r2.png';
+import r1 from 'p@/images/r1.png';
+import r2 from 'p@/images/r2.png';
 import './tabs.scss';
 
 function TabHome(props: { translate: any }) {
 	return (
-		<div>
+		<div className='mb-5'>
 			<TextAnim text='ЯСВЕТЛЫЙ'></TextAnim>
 			{props.translate ? (
 				<Grid>
