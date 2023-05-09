@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 
 function FirstHelp(props: { translate: any }) {
-	return <div>{props.translate.texts[1]}</div>;
+	return <div>{props.translate.texts.test1}</div>;
 }
 
 export default FirstHelp as FunctionComponent;

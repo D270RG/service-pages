@@ -8,7 +8,7 @@ import serviceDescriptions from 'p@/descriptions/serviceDescriptions.json';
 import { Languages, ServiceType } from 'p@/common-types/common-types';
 import { Button } from 'react-bootstrap';
 
-function TabCart(props: { translate: any }) {
+function Cart(props: { translate: any }) {
 	const [cartItems, setCartItems] = useState<ICartItem[]>([]);
 	const [price, setPrice] = useState<number | undefined>(undefined);
 	const [priceCurrency, setPriceCurrency] = useState<string>('');
@@ -52,10 +52,10 @@ function TabCart(props: { translate: any }) {
 					<h3>
 						{price} {translations[Languages.ru].currencies[priceCurrency]}
 					</h3>
-					<Button className='btn btn-dark'>Заказать</Button>
+					<Button className='btn btn-dark'>{translations[Languages.ru].general.order}</Button>
 				</div>
 			) : (
-				<h6 className='text-muted'>Корзина пуста</h6>
+				<h6 className='text-muted'>{props.translate.texts.isEmpty}</h6>
 			)}
 			{cartItems.map((itemEntry) => {
 				return (
@@ -93,4 +93,4 @@ function TabCart(props: { translate: any }) {
 	);
 }
 
-export default TabCart as FunctionComponent;
+export default Cart as FunctionComponent;

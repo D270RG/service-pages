@@ -9,7 +9,7 @@ import r1 from 'p@/images/r1.png';
 import r2 from 'p@/images/r2.png';
 import './tabs.scss';
 
-function TabHome(props: { translate: any }) {
+function Home(props: { translate: any }) {
 	return (
 		<div className='mb-5'>
 			<TextAnim text='ЯСВЕТЛЫЙ'></TextAnim>
@@ -17,25 +17,25 @@ function TabHome(props: { translate: any }) {
 				<Grid>
 					<div className='flyer-container-right'>
 						<Flyer
-							title={props.translate.cardTexts.direction1.title}
+							title={props.translate.titles.cardTitle1}
 							contentImage={
 								<Image
 									src={r1}
-									alt={props.translate.cardTexts.direction1.title}></Image>
+									alt={props.translate.titles.cardTitle1}></Image>
 							}
-							contentText={props.translate.cardTexts.direction1.text}
+							contentText={props.translate.texts.card1}
 							href='/first-help'
 						/>
 					</div>
 					<div className='flyer-container-left'>
 						<Flyer
-							title={props.translate.cardTexts.direction2.title}
+							title={props.translate.titles.cardTitle2}
 							contentImage={
 								<Image
 									src={r2}
-									alt={props.translate.cardTexts.direction2.title}></Image>
+									alt={props.translate.titles.cardTitle2}></Image>
 							}
-							contentText={props.translate.cardTexts.direction2.text}
+							contentText={props.translate.texts.card2}
 							href='/first-help'
 						/>
 					</div>
@@ -51,4 +51,4 @@ function TabHome(props: { translate: any }) {
 	);
 }
 
-export default TabHome as FunctionComponent;
+export default Home as FunctionComponent;
