@@ -1,3 +1,4 @@
+@import '~bootstrap/scss/bootstrap-grid.scss';
 .table {
 	width: 100%;
 	border: none;
@@ -9,7 +10,6 @@
 	font-weight: bold;
 	text-align: left;
 	border: none;
-	padding: 10px 15px;
 	background: #d8d8d8;
 	font-size: 14px;
 	border-left: 1px solid #ddd;
@@ -17,9 +17,10 @@
 }
 .table tbody td {
 	text-align: left;
+	word-wrap: break-word;
+	hyphens: auto;
 	border-left: 1px solid #ddd;
 	border-right: 1px solid #ddd;
-	padding: 10px 15px;
 	font-size: 14px;
 	vertical-align: top;
 }
@@ -33,4 +34,14 @@
 }
 .table tbody tr:nth-child(even) {
 	background: #f3f3f3;
+}
+.hide-col {
+	@media screen and (max-width: map-get($grid-breakpoints,sm)) {
+		display: none;
+	}
+}
+.show-col {
+	@media screen and (min-width: map-get($grid-breakpoints,sm)) {
+		display: none;
+	}
 }

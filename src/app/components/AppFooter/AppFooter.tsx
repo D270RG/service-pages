@@ -33,13 +33,13 @@ function AppFooter(props: { tabLinks: string[] }) {
 			<div className='main-section'>
 				<div className='link-block'>{links}</div>
 				<div className='social-block'>
-					<div className='contacts mb-3'>
+					<div className='contacts'>
 						<span>{contactInfo.contacts.phone}</span>
 						<span>{contactInfo.contacts.email}</span>
 						<span>{contactInfo.contacts.address}</span>
 						<span>{contactInfo.contacts.postal}</span>
 					</div>
-					<div className='social-links'>
+					<div className='social-links mb-1'>
 						<SocialLink
 							iconSize={30}
 							iconColor='white'

@@ -20,14 +20,21 @@ function PriceTable(props: { priceInfo: IPriceList; path: string }) {
 			const isDisabled = disabledIds.includes(serviceEntry.id);
 			prices.push(
 				<tr>
-					<td>{serviceDescriptions[serviceEntry.descriptionId].description}</td>
 					<td>
+						<div className='d-flex flex-column'>
+							<span>{serviceDescriptions[serviceEntry.descriptionId].description}</span>
+							<span className='show-col mt-2'>
+								{serviceEntry.price} {translations[Languages.ru].currencies[serviceEntry.currency]}
+							</span>
+						</div>
+					</td>
+					<td className='hide-col'>
 						{serviceEntry.price} {translations[Languages.ru].currencies[serviceEntry.currency]}
 					</td>
 					<td>
 						<div className='d-flex justify-content-center align-items-center flex-row flex-wrap'>
 							<Button
-								className='m-1 btn btn-dark'
+								className='m-1 btn btn-dark text-break'
 								disabled={isDisabled}
 								onClick={() => {
 									store.dispatch(cartSlice.actions.addItem({ cartItem: serviceEntry }));
@@ -39,7 +46,7 @@ function PriceTable(props: { priceInfo: IPriceList; path: string }) {
 							</Button>
 							{isDisabled && (
 								<Button
-									className='m-1 btn btn-dark'
+									className='m-1 btn btn-dark text-break'
 									onClick={() => {
 										store.dispatch(cartSlice.actions.removeItem({ id: serviceEntry.id }));
 										setDisabledIds(cartSelectors.selectIds(store.getState()) as string[]);
@@ -59,7 +66,7 @@ function PriceTable(props: { priceInfo: IPriceList; path: string }) {
 			<thead>
 				<tr>
 					<th>Название</th>
-					<th>Цена</th>
+					<th className='hide-col'>Цена</th>
 					<th></th>
 				</tr>
 			</thead>
