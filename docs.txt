@@ -1,0 +1,170 @@
+------------------------------------Структура-------------------------------------
+
+Страницы разделов находятся в /src/app/AppTabs/tabs/
+Стили разделов задаются в /src/app/AppTabs/tabs/tabs.scss
+Список разделов задается в /src/app/AppTabs/tabs/index.tsx
+Локализация разделов находится в /public/descriptions/translations.json
+
+Добавление раздела Example с адресом 'example-path':
+    1. Добавить файл раздела Example.tsx в /src/app/AppTabs/tabs/
+    2. Добавить в файл компонент:
+
+        import React, { FunctionComponent } from 'react';
+
+        function Example(props: { translate: any }) {
+            return <div>ExampleContent</div>;
+        }
+
+        export default Example as FunctionComponent;
+
+
+    3. Добавить экспорт компонента в /src/app/AppTabs/tabs/index.tsx с указанием адреса:
+
+        ...
+        export const Example = React.lazy(() => import('./Example'));
+
+        export const TabMap: Map<string, React.LazyExoticComponent<React.FunctionComponent<{}>>> = new Map([
+            ...
+            ['example-path', Example],
+        ]);
+
+    4. Если не нужна вкладка в навбаре для раздела, добавить путь 'example-path' в unrenderedTabs:
+
+        export const unrenderedTabs = {
+            ...
+            'example-path': true,
+        };
+
+
+        Если не нужен заголовок для страницы, добавить путь в unrenderedTitles:
+        
+        export const unrenderedTitles = {
+            ...
+            'example-path': true,
+        };
+
+
+        Если не нужна таблица цен в разделе, добавить путь в unrenderedBuyButtons:
+
+        export const unrenderedBuyButtons = {
+            ...
+            'example-path':true
+        };
+
+    5. Добавить текст для раздела в /public/descriptions/translations.json 
+    (пока только функционал для ru):
+
+        {
+            "ru": {
+                ...
+                "tabs": {
+                    "example-path": {
+                        "title": "Заголовок Example",
+                        "texts": {
+                            "exampleText1": "Первый абзац",
+                            "exampleText2": "Второй абзац"
+                        },
+                        "titles": {
+                            "exampleTitle1": "Первый заголовок",
+                            "exampleTitle2": "Второй заголовок"
+                        }
+                    },
+                    ...
+                }
+            }
+        }
+
+    внутри компонента этот текст можно будет вставить как: 
+
+        <span>{translate.texts.exampleText1}</span>
+        <span>{translate.titles.exampleTitle1}</span>
+
+---------------------------------------------------------------------------------
+
+Добавление картики example в компонент:
+
+    1. Добавить картинку в /public/images/
+    2. Добавить импорт:
+
+        import Image from 'next/image'; //Модуль для работы с картинками
+        import example from 'p@/images/example.png'; //Картинка
+
+    3. Добавить картинку в верстку:
+
+        <Image className='myImage1' src={example} alt='подпись example'></Image>
+
+    4. Добавить стили картинке в tabs.scss:
+
+        .myImage1 {
+            ...
+        }
+
+        (Или img{} для всех картинок)
+
+---------------------------------------------------------------------------------
+
+Общение с сервером
+    1. Адрес для обращения к серверу задается в /server-info.js
+    2. Эндпоинты:
+
+        POST '/prices' 
+        payload:{['first-help','example-path',...]} 
+                //  пути, описанные в /src/app/AppTabs/tabs/index.tsx в TabMap 
+                //  и не добавленные в unrenderedBuyButtons
+        response code: 200
+        response payload:
+                'first-help': [
+                    {   
+                        id: '123', 
+                        type: 'Repair',  //Тип - Repair для иконки отвертки, Android для андроида, Apple для яблока
+                        price: 10, 
+                        currency: 'rub', //Пока только моновалютный функционал
+                        amount: 1, 
+                        descriptionId: '123' //Id для локализации в /public/descriptions/serviceDescriptiosn.json
+                    },
+                    {
+                        id: '1234',
+                        type: 'Repair',
+                        price: 100,
+                        currency: 'rub',
+                        amount: 1,
+                        descriptionId: '1234',
+                    }
+                ],
+                'laptop-repair': [
+                    {
+                        id: '456',
+                        type: 'Windows',
+                        price: 1000,
+                        currency: 'rub',
+                        amount: 1,
+                        descriptionId: '456',
+                    },
+                    {
+                        id: '4567',
+                        type: 'Windows',
+                        price: 100000,
+                        currency: 'rub',
+                        amount: 1,
+                        descriptionId: '4567',
+                    },
+                ],
+                ...
+                //Список услуг для каждого раздела с информацией
+
+        !!descriptionId услуг, возвращаемые сервером, должны быть добавлены в /public/descriptions/serviceDescriptiosn.json:
+
+        {
+            ...
+            "123": {
+                "name": "Диагностика",
+                "description": "Диагностика устройства"
+            },
+            "1234": {
+                "name": "Чистка",
+                "description": "Чистка устройства"
+            },
+            ...
+        }
+
+    Пример сервера можно посмотреть в /template-server

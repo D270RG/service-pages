@@ -27,7 +27,7 @@ svg {
 				animation: rotate1 $anim-time linear infinite;
 				&.reverse {
 					animation: rotate1 $anim-time linear infinite;
-					> svg {
+					> .svg-cont {
 						transform-origin: 42px 42px;
 						animation: rotate1 $anim-time linear infinite reverse;
 					}
@@ -37,12 +37,14 @@ svg {
 				animation: rotate2 $anim-time linear infinite;
 				&.reverse {
 					animation: rotate2 $anim-time linear infinite;
-					> svg {
+					> .svg-cont {
 						transform-origin: 42px 42px;
 						animation: rotate2 $anim-time linear infinite reverse;
-						> * {
-							transform-origin: center;
-							transform: rotate(180deg);
+						> svg {
+							> * {
+								transform-origin: center;
+								transform: rotate(180deg);
+							}
 						}
 					}
 				}
@@ -51,7 +53,7 @@ svg {
 				animation: rotate3 $anim-time linear infinite;
 				&.reverse {
 					animation: rotate3 $anim-time linear infinite;
-					> svg {
+					> .svg-cont {
 						transform-origin: 42px 42px;
 						animation: rotate3 $anim-time linear infinite reverse;
 					}
@@ -61,12 +63,14 @@ svg {
 				animation: rotate4 $anim-time linear infinite;
 				&.reverse {
 					animation: rotate4 $anim-time linear infinite;
-					> svg {
+					> .svg-cont {
 						transform-origin: 42px 42px;
 						animation: rotate4 $anim-time linear infinite reverse;
-						> * {
-							transform-origin: center;
-							transform: rotate(-180deg);
+						> svg {
+							> * {
+								transform-origin: center;
+								transform: rotate(-180deg);
+							}
 						}
 					}
 				}
