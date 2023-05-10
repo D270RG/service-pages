@@ -3,7 +3,8 @@
 		"general": {
 			"order": "Заказать",
 			"ordered": "Добавлено",
-			"cancel": "Отменить"
+			"cancel": "Отменить",
+			"noPriceData": "Цены недоступны"
 		},
 		"currencies": {
 			"rub": "руб.",
