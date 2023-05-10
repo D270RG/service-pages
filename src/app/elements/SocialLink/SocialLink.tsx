@@ -10,7 +10,7 @@ function SocialLink(props: {
 	return (
 		<a
 			style={{ height: props.iconSize, width: props.iconSize, color: props.iconColor }}
-			className='socialLink ms-1'
+			className='socialLink me-1'
 			target='_blank'
 			href={'https://' + props.link}>
 			{props.icon}
