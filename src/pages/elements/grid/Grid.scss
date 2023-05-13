@@ -1,0 +1,9 @@
+@import '../../index.scss';
+.grid {
+	display: grid;
+	@media screen and (max-width: map-get($grid-breakpoints,xl)) {
+		grid-template-columns: 1fr;
+	}
+	gap: 55px;
+	grid-template-columns: 1fr 1fr;
+}

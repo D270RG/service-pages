@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 module.exports = {
 	async rewrites() {
 		return [
@@ -9,7 +11,19 @@ module.exports = {
 			},
 		];
 	},
+	pageExtensions: ['/.jsx?$/'],
 	webpack(config) {
+		// Disable abomination called css modules
+		config.module.rules.forEach((rule) => {
+			const { oneOf } = rule;
+			if (oneOf) {
+				oneOf.forEach((one) => {
+					if (!`${one.issuer?.and}`.includes('_app')) return;
+					one.issuer.and = [path.resolve(__dirname)];
+				});
+			}
+		});
+
 		// Grab the existing rule that handles SVG imports
 		const fileLoaderRule = config.module.rules.find((rule) => rule.test?.test?.('.svg'));
 
@@ -33,9 +47,6 @@ module.exports = {
 		fileLoaderRule.exclude = /\.svg$/i;
 
 		return config;
-	},
-	experimental: {
-		appDir: true,
 	},
 	optimizeFonts: false,
 };

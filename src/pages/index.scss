@@ -1,0 +1,12 @@
+$grid-breakpoints: (
+	xs: 0,
+	sm: 576px,
+	md: 768px,
+	lg: 992px,
+	xl: 1200px,
+	xxl: 1400px,
+);
+$spacer: 1rem;
+$baseColor: rgb(0, 0, 0);
+$textColor: rgb(239, 239, 239);
+$activeColor: rgb(234, 234, 234);

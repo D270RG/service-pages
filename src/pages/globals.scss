@@ -1,0 +1,48 @@
+@import './index.scss';
+a:link {
+	text-decoration: none;
+	color: unset !important;
+}
+
+a:visited {
+	text-decoration: none;
+	color: unset !important;
+}
+
+a:hover {
+	text-decoration: none;
+	color: unset !important;
+}
+
+a:active {
+	text-decoration: none;
+	color: unset !important;
+}
+svg {
+	fill: currentColor;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	padding: 0px !important;
+	margin: 0px !important;
+}
+.padded-page {
+	@media screen and (min-width: map-get($grid-breakpoints,md)) {
+		padding-left: $spacer * 8;
+		padding-right: $spacer * 8;
+	}
+	padding-left: $spacer;
+	padding-right: $spacer;
+}
+.padded-half {
+	@media screen and (min-width: map-get($grid-breakpoints,md)) {
+		padding-left: $spacer * 4;
+		padding-right: $spacer * 4;
+	}
+	padding-left: $spacer;
+	padding-right: $spacer;
+}

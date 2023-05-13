@@ -10,6 +10,7 @@
 	},
 	"dependencies": {
 		"@reduxjs/toolkit": "^1.9.5",
+		"@svgr/webpack": "^8.0.1",
 		"@types/node": "20.1.0",
 		"@types/react": "18.2.5",
 		"@types/react-dom": "18.2.4",
@@ -26,13 +27,13 @@
 		"redux": "^4.2.1",
 		"sass": "^1.62.1",
 		"sharp": "^0.32.1",
-		"typescript": "5.0.4"
+		"typescript": "5.0.4",
+		"wepback": "^1.0.0"
 	},
 	"resolutions": {
 		"@types/react": "17.0.43"
 	},
 	"devDependencies": {
-		"@svgr/webpack": "^8.0.0",
 		"eslint": "^8.40.0",
 		"eslint-plugin-unused-imports": "^2.0.0"
 	}
