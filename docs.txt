@@ -1,12 +1,12 @@
 ------------------------------------Структура-------------------------------------
 
-Страницы разделов находятся в /src/app/AppTabs/tabs/
-Стили разделов задаются в /src/app/AppTabs/tabs/tabs.scss
-Список разделов задается в /src/app/AppTabs/tabs/index.tsx
+Страницы разделов находятся в /src/pages/AppTabs/tabs/
+Стили разделов задаются в /src/pages/AppTabs/tabs/tabs.scss
+Список разделов задается в /src/pages/AppTabs/tabs/index.tsx
 Локализация разделов находится в /public/descriptions/translations.json
 
 Добавление раздела Example с адресом 'example-path':
-    1. Добавить файл раздела Example.tsx в /src/app/AppTabs/tabs/
+    1. Добавить файл раздела Example.tsx в /src/pages/AppTabs/tabs/
     2. Добавить в файл компонент:
 
         import React, { FunctionComponent } from 'react';
@@ -18,7 +18,7 @@
         export default Example as FunctionComponent;
 
 
-    3. Добавить экспорт компонента в /src/app/AppTabs/tabs/index.tsx с указанием адреса:
+    3. Добавить экспорт компонента в /src/pages/AppTabs/tabs/index.tsx с указанием адреса:
 
         ...
         export const Example = React.lazy(() => import('./Example'));
@@ -109,7 +109,7 @@
 
         POST '/prices' 
         payload:{['first-help','example-path',...]} 
-                //  пути, описанные в /src/app/AppTabs/tabs/index.tsx в TabMap 
+                //  пути, описанные в /src/pages/AppTabs/tabs/index.tsx в TabMap 
                 //  и не добавленные в unrenderedBuyButtons
         response code: 200
         response payload:
