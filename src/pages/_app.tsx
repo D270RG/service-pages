@@ -1,13 +1,11 @@
 'use client';
 
-import * as Components from './components/index';
+import * as Components from 'pages/components/index';
 import { BrowserRouter } from 'react-router-dom';
-import Logo from './elements/smallLogo/Logo';
-import { createElement, Suspense, useEffect, useRef, useState } from 'react';
-import { TabMapKeys } from './components/AppTabs/tabs';
+import Logo from 'pages/elements/smallLogo/Logo';
+import { useState } from 'react';
+import { TabMapKeys } from 'pages/components/AppTabs/tabs';
 import './_app.scss';
-import Loading from './elements/loading/loading';
-import dynamic from 'next/dynamic';
 
 function SafeHydrate({ children }: { children: JSX.Element | JSX.Element[] }) {
 	return (

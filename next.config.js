@@ -2,6 +2,8 @@
 const path = require('path');
 
 module.exports = {
+	/* config for next-optimized-images */
+	// your config for other plugins or the general next.js here...
 	async rewrites() {
 		return [
 			// Rewrite everything else to use `pages/index`
@@ -11,7 +13,11 @@ module.exports = {
 			},
 		];
 	},
-	pageExtensions: ['/.jsx?$/'],
+	pageExtensions: ['tsx'],
+	trailingSlash: true,
+	images: {
+		unoptimized: true,
+	},
 	webpack(config) {
 		// Disable abomination called css modules
 		config.module.rules.forEach((rule) => {
