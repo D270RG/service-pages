@@ -1,8 +1,13 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { Currency, ServiceType } from 'p@/common-types/common-types';
+import { Currency, ICartItem, ITranslations, ServiceType } from 'p@/common-types/common-types';
 
-//----------------------------------
+//----------------------------------payload interfaces
+interface LocaleActionPayload {
+	locale?: ITranslations;
+	error?: Error;
+}
+
 interface AddCartItemPayload {
 	cartItem: ICartItem;
 }
@@ -17,25 +22,23 @@ interface AmountMinusPayload {
 	id: string;
 	amount: number;
 }
-//----------------------------------
-export interface ICartItem {
-	id: string;
-	type: ServiceType;
-	price: number;
-	currency: Currency;
-	amount: number;
-	descriptionId: string;
+//----------------------------------states
+interface ILocaleInitialState {
+	locale: ITranslations | undefined;
+	error?: Error;
 }
-export interface IPriceList {
-	[path: string]: ICartItem[];
-}
+export const localeInitialState: ILocaleInitialState = {
+	locale: undefined,
+	error: undefined,
+};
+
 export const cartAdapter = createEntityAdapter<ICartItem>({
 	// Assume IDs are stored in a field other than `item.id`
 	selectId: (item) => item.id,
 	// Keep the "all IDs" array sorted based on ids
 	sortComparer: (a, b) => a.type.localeCompare(b.type),
 });
-//----------------------------------
+//----------------------------------reducer
 export const cartSlice = createSlice({
 	name: 'cartItems',
 	initialState: cartAdapter.getInitialState(),
@@ -67,6 +70,19 @@ export const cartSlice = createSlice({
 					amount: cartItem.amount - action.payload.amount,
 				});
 			}
+		},
+	},
+});
+export const localeSlice = createSlice({
+	name: 'locale',
+	initialState: localeInitialState,
+	reducers: {
+		getLocaleSuccess(state, action: PayloadAction<LocaleActionPayload>) {
+			console.log('get locale success');
+			state.locale = action.payload.locale;
+		},
+		getLocaleError(state, action: PayloadAction<LocaleActionPayload>) {
+			state.error = action.payload.error;
 		},
 	},
 });

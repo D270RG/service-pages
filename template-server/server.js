@@ -1,10 +1,9 @@
 const PORT = 4000;
-let globalFlags = {
-	mapUpdate: false,
-};
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const translations = require('./translations.json');
 
 const app = express();
 
@@ -15,6 +14,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
 async function bodyParser(req, callback) {
 	req.setEncoding('utf8');
 	const rb = [];
@@ -33,7 +33,21 @@ async function bodyParserWrap(req) {
 	});
 }
 
-app.post('/prices', (req, res) => {
+app.post('/flyers', (req, res) => {
+	let exampleResponse = {
+		0123: {
+			titleId: cardTitle1,
+			textId: card1,
+			imageId: 'r1',
+		},
+		9217: {
+			titleId: cardTitle1,
+			textId: card1,
+			imageId: 'r1',
+		},
+	};
+});
+app.post('/prices', express.json(), (req, res) => {
 	let exampleResponse = {
 		'first-help': [
 			{ id: '123', type: 'Repair', price: 10, currency: 'rub', amount: 1, descriptionId: '123' },
@@ -109,9 +123,61 @@ app.post('/prices', (req, res) => {
 	};
 	console.log('sending');
 	res.setHeader('Access-Control-Allow-Origin', '*');
-	res.status(200).json(exampleResponse);
+	res.status(200).json(JSON.stringify(exampleResponse));
 });
-
+app.get('/serviceDescriptions', (req, res) => {
+	console.log('sending descriptions');
+	let exampleResponse = {
+		123: {
+			name: 'Диагностика',
+			description: 'Диагностика устройства',
+		},
+		1234: {
+			name: 'Чистка',
+			description: 'Чистка устройства',
+		},
+		12345: {
+			name: 'Замена термопасты',
+			description: 'Замена термопасты на новую',
+		},
+		456: {
+			name: 'Замена SSD',
+			description: 'Замена SSD на новое',
+		},
+		4567: {
+			name: 'Замена матери',
+			description: 'Замена матери',
+		},
+		789: {
+			name: 'Замена экрана',
+			description: 'Замена экрана смартфона Android',
+		},
+		78910: {
+			name: 'Замена динамиков',
+			description: 'Замена динамиков телефона Android',
+		},
+		7891011: {
+			name: 'Рут',
+			description: 'Рут телефона Android',
+		},
+		789101112: {
+			name: 'Замена батареи',
+			description: 'Замена батареи телефона Android',
+		},
+	};
+	console.log('sending');
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	res.status(200).json(JSON.stringify(exampleResponse));
+});
+app.post('/translations', express.json(), (req, res) => {
+	let locale = req.body.locale;
+	console.log('translations req', req.body);
+	if (translations.hasOwnProperty(locale)) {
+		res.status(200).json(JSON.stringify(translations[locale]));
+	} else {
+		res.status(404);
+	}
+});
 let server = app.listen(PORT, function () {
 	console.log(`Server is running on ${PORT}`);
 });

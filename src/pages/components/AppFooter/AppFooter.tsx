@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import './AppFooter.scss';
 import contactInfo from 'p@/descriptions/contactInfo.json';
-import translations from 'p@/descriptions/translations.json';
-import { Languages } from 'p@/common-types/common-types';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 //Socials
 import Facebook from 'p@/icons/socials/facebook.svg';

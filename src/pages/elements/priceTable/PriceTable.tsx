@@ -1,14 +1,24 @@
-import { cartSlice, IPriceList } from 'pages/store/reducers';
+import { cartSlice } from 'pages/store/reducers';
 import React, { useEffect, useState } from 'react';
 import './PriceTable.scss';
-import serviceDescriptions from 'p@/descriptions/serviceDescriptions.json';
-import translations from 'p@/descriptions/translations.json';
 import { Button } from 'react-bootstrap';
 import store from 'pages/store/store';
-import { Languages } from 'p@/common-types/common-types';
+import {
+	ICurrencyTranslations,
+	IGeneralTranslations,
+	IPriceList,
+	IServiceDescs,
+	Languages,
+} from 'p@/common-types/common-types';
 import { cartSelectors } from 'pages/store/selectors';
 
-function PriceTable(props: { priceInfo: IPriceList; path: string }) {
+function PriceTable(props: {
+	serviceDescriptions: IServiceDescs;
+	currencyTranslations: ICurrencyTranslations;
+	generalTranslations: IGeneralTranslations;
+	priceInfo: IPriceList;
+	path: string;
+}) {
 	const [disabledIds, setDisabledIds] = useState<string[]>([]);
 	useEffect(() => {
 		setDisabledIds(cartSelectors.selectIds(store.getState()) as string[]);
@@ -22,14 +32,14 @@ function PriceTable(props: { priceInfo: IPriceList; path: string }) {
 				<tr>
 					<td>
 						<div className='d-flex flex-column'>
-							<span>{serviceDescriptions[serviceEntry.descriptionId].description}</span>
+							<span>{props.serviceDescriptions[serviceEntry.descriptionId].description}</span>
 							<span className='show-col mt-2'>
-								{serviceEntry.price} {translations[Languages.ru].currencies[serviceEntry.currency]}
+								{serviceEntry.price} {props.currencyTranslations[serviceEntry.currency]}
 							</span>
 						</div>
 					</td>
 					<td className='hide-col'>
-						{serviceEntry.price} {translations[Languages.ru].currencies[serviceEntry.currency]}
+						{serviceEntry.price} {props.currencyTranslations[serviceEntry.currency]}
 					</td>
 					<td>
 						<div className='d-flex justify-content-center align-items-center flex-row flex-wrap'>
@@ -40,9 +50,7 @@ function PriceTable(props: { priceInfo: IPriceList; path: string }) {
 									store.dispatch(cartSlice.actions.addItem({ cartItem: serviceEntry }));
 									setDisabledIds(cartSelectors.selectIds(store.getState()) as string[]);
 								}}>
-								{!isDisabled
-									? translations[Languages.ru].general.order
-									: translations[Languages.ru].general.ordered}
+								{!isDisabled ? props.generalTranslations.order : props.generalTranslations.ordered}
 							</Button>
 							{isDisabled && (
 								<Button
@@ -51,7 +59,7 @@ function PriceTable(props: { priceInfo: IPriceList; path: string }) {
 										store.dispatch(cartSlice.actions.removeItem({ id: serviceEntry.id }));
 										setDisabledIds(cartSelectors.selectIds(store.getState()) as string[]);
 									}}>
-									{translations[Languages.ru].general.cancel}
+									{props.generalTranslations.cancel}
 								</Button>
 							)}
 						</div>

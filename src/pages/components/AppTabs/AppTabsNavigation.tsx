@@ -4,11 +4,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { TabMap, unrenderedTabs } from './tabs/index';
 import './AppTabs.scss';
 
-import translations from 'p@/descriptions/translations.json';
-import { Languages } from 'p@/common-types/common-types';
+import { ITabTranslations, Languages } from 'p@/common-types/common-types';
 import { InView } from 'react-intersection-observer';
 
-function AppTabsNavigation(props: { setDropdownItems: (dropdownItems: JSX.Element[]) => void }) {
+function AppTabsNavigation(props: {
+	tabTranslations: ITabTranslations;
+	setDropdownItems: (dropdownItems: JSX.Element[]) => void;
+}) {
 	const [navs, setNavs] = useState<JSX.Element[]>([]);
 
 	const hiddenNavs: string[] = [];
@@ -16,7 +18,6 @@ function AppTabsNavigation(props: { setDropdownItems: (dropdownItems: JSX.Elemen
 
 	useEffect(() => {
 		const navs: JSX.Element[] = [];
-		const tabTranslations: any = translations[Languages.ru].tabs;
 		TabMap.forEach((ComponentValue, pathKey) => {
 			if (!unrenderedTabs.hasOwnProperty(pathKey))
 				navs.push(
@@ -41,7 +42,7 @@ function AppTabsNavigation(props: { setDropdownItems: (dropdownItems: JSX.Elemen
 										<Dropdown.Item
 											key={navId}
 											href={navId}>
-											{tabTranslations[navId].title}
+											{props.tabTranslations[navId].title}
 										</Dropdown.Item>
 									);
 								})
@@ -52,7 +53,7 @@ function AppTabsNavigation(props: { setDropdownItems: (dropdownItems: JSX.Elemen
 								eventKey={pathKey}
 								as={Link}
 								to={pathKey}>
-								{tabTranslations[pathKey].title}
+								{props.tabTranslations[pathKey].title}
 							</Nav.Link>
 						</Nav.Item>
 					</InView>

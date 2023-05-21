@@ -8,34 +8,43 @@ import { Col, Row } from 'react-bootstrap';
 import r1 from 'p@/images/r1.png';
 import r2 from 'p@/images/r2.png';
 import './tabs.scss';
+import {
+	ICurrencyTranslations,
+	IGeneralTranslations,
+	ITabTranslation,
+} from 'p@/common-types/common-types';
 
-function Home(props: { translate: any }) {
+function Home(props: {
+	tabTranslate: ITabTranslation;
+	generalTranslate: IGeneralTranslations;
+	currencyTranslate: ICurrencyTranslations;
+}) {
 	return (
 		<div className='mb-5'>
 			<TextAnim text='ЯСВЕТЛЫЙ'></TextAnim>
-			{props.translate ? (
+			{props.tabTranslate ? (
 				<Grid>
 					<div className='flyer-container-right'>
 						<Flyer
-							title={props.translate.titles.cardTitle1}
+							title={props.tabTranslate.titles.cardTitle1}
 							contentImage={
 								<Image
 									src={r1}
-									alt={props.translate.titles.cardTitle1}></Image>
+									alt={props.tabTranslate.titles.cardTitle1}></Image>
 							}
-							contentText={props.translate.texts.card1}
+							contentText={props.tabTranslate.texts.card1}
 							href='/first-help'
 						/>
 					</div>
 					<div className='flyer-container-left'>
 						<Flyer
-							title={props.translate.titles.cardTitle2}
+							title={props.tabTranslate.titles.cardTitle2}
 							contentImage={
 								<Image
 									src={r2}
-									alt={props.translate.titles.cardTitle2}></Image>
+									alt={props.tabTranslate.titles.cardTitle2}></Image>
 							}
-							contentText={props.translate.texts.card2}
+							contentText={props.tabTranslate.texts.card2}
 							href='/first-help'
 						/>
 					</div>

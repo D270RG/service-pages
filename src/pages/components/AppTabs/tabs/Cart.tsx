@@ -1,81 +1,87 @@
-import translations from 'p@/descriptions/translations.json';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import store from 'pages/store/store';
 import './tabs.scss';
-import { cartSlice, ICartItem } from 'pages/store/reducers';
+import { cartSlice } from 'pages/store/reducers';
 import { cartSelectors } from 'pages/store/selectors';
-import serviceDescriptions from 'p@/descriptions/serviceDescriptions.json';
-import { Languages, ServiceType } from 'p@/common-types/common-types';
+import {
+	ICartItem,
+	ICurrencyTranslations,
+	IGeneralTranslations,
+	IServiceDescs,
+	ITabTranslation,
+	Languages,
+	ServiceType,
+} from 'p@/common-types/common-types';
 import { Button } from 'react-bootstrap';
+import { HttpClient } from 'HttpClient';
+import Loading from 'pages/elements/loading/loading';
+import TypeContainer from 'pages/elements/typeContainer/TypeContainer';
 
-function Cart(props: { translate: any }) {
+function Cart(props: {
+	tabTranslate: ITabTranslation;
+	generalTranslate: IGeneralTranslations;
+	currencyTranslate: ICurrencyTranslations;
+}) {
 	const [cartItems, setCartItems] = useState<ICartItem[]>([]);
 	const [price, setPrice] = useState<number | undefined>(undefined);
 	const [priceCurrency, setPriceCurrency] = useState<string>('');
+	const [serviceDescriptions, setServiceDescriptions] = useState<IServiceDescs | undefined>(
+		undefined
+	);
+	const httpClient = new HttpClient();
+	function fetchServiceDescs() {
+		httpClient.getServiceDescriptions().then((serviceDescs) => {
+			setServiceDescriptions(serviceDescs);
+		});
+	}
 	useEffect(() => {
+		fetchServiceDescs();
 		setCartItems(cartSelectors.selectAll(store.getState()));
 	}, []);
 	useEffect(() => {
 		let price = 0;
 		let lastPriceCurrency = '';
 		cartItems.forEach((cartItem) => {
-			//Monocurrency only
 			price += cartItem.price;
 			lastPriceCurrency = cartItem.currency;
 		});
 		setPriceCurrency(lastPriceCurrency);
 		setPrice(price);
 	}, [cartItems]);
-	function renderType(type: string): JSX.Element {
-		switch (type) {
-			case ServiceType.Android: {
-				return <i className='bi bi-android2' />;
-			}
-			case ServiceType.Apple: {
-				return <i className='bi bi-apple' />;
-			}
-			case ServiceType.Windows: {
-				return <i className='bi bi-windows' />;
-			}
-			case ServiceType.Repair: {
-				return <i className='bi bi-screwdriver' />;
-			}
-			default: {
-				return <i className='bi bi-screwdriver' />;
-			}
-		}
-	}
+
 	return (
 		<div>
 			{cartItems.length > 0 ? (
 				<div className='mb-3 d-flex justify-content-between'>
 					<h3>
-						{price} {translations[Languages.ru].currencies[priceCurrency]}
+						{price} {props.currencyTranslate[priceCurrency]}
 					</h3>
-					<Button className='btn btn-dark'>{translations[Languages.ru].general.order}</Button>
+					<Button className='btn btn-dark'>{props.generalTranslate.order}</Button>
 				</div>
 			) : (
-				<h6 className='text-muted'>{props.translate.texts.isEmpty}</h6>
+				<h6 className='text-muted'>{props.tabTranslate.texts.isEmpty}</h6>
 			)}
 			{cartItems.map((itemEntry) => {
 				return (
 					<div
 						key={itemEntry.id}
 						className='cart-entry-container'>
-						<div className='typeContainer'>
-							<h3 className=''>{renderType(itemEntry.type)} </h3>
-						</div>
-						<div className='d-flex align-items-start flex-column descriptionContainer'>
-							<div>
-								<h2>{serviceDescriptions[itemEntry.descriptionId].name}</h2>
+						<TypeContainer type={itemEntry.type} />
+						{serviceDescriptions ? (
+							<div className='d-flex align-items-start flex-column descriptionContainer'>
+								<div>
+									<h2>{serviceDescriptions[itemEntry.descriptionId].name}</h2>
+								</div>
+								<div className='description'>
+									{serviceDescriptions[itemEntry.descriptionId].description}
+								</div>
 							</div>
-							<div className='description'>
-								{serviceDescriptions[itemEntry.descriptionId].description}
-							</div>
-						</div>
+						) : (
+							<Loading />
+						)}
 						<div className='priceContainer'>
 							<h2>
-								{itemEntry.price} {translations[Languages.ru].currencies[itemEntry.currency]}
+								{itemEntry.price} {props.currencyTranslate[itemEntry.currency]}
 							</h2>
 						</div>
 						<button

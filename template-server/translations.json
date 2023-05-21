@@ -1,5 +1,5 @@
 {
-	"ru": {
+	"ru-RU": {
 		"general": {
 			"order": "Заказать",
 			"ordered": "Добавлено",
@@ -8,10 +8,7 @@
 		},
 		"currencies": {
 			"rub": "руб.",
-			"usd": "usd.",
-			"eur": "eur.",
-			"tenge": "тен.",
-			"byn": "бел. руб."
+			"usd": "usd."
 		},
 		"tabs": {
 			"home": {
