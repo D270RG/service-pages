@@ -8,9 +8,12 @@
 }
 .flyer-container-left,
 .flyer-container-right {
-	display: flex;
-	@media screen and (max-width: map-get($grid-breakpoints,xl)) {
-		justify-content: center;
+	> a {
+		width: 100%;
+		display: flex;
+		@media screen and (max-width: map-get($grid-breakpoints,xl)) {
+			justify-content: center;
+		}
 	}
 }
 //Cart

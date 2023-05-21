@@ -3,7 +3,7 @@
 	$padding: 40px;
 	width: 450px;
 	@media screen and (max-width: map-get($grid-breakpoints,sm)) {
-		width: 100%;
+		width: 300px;
 	}
 	padding: $padding;
 	padding-top: $padding - 10;
