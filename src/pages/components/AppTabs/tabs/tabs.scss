@@ -1,63 +1,63 @@
-// @import '../../../index.scss';
-// //Home
-// .flyer-container-right {
-// 	> a {
-// 		justify-content: flex-end;
-// 	}
-// }
-// .flyer-container-left {
-// 	> a {
-// 		justify-content: flex-start;
-// 	}
-// }
-// .flyer-container-left,
-// .flyer-container-right {
-// 	display: flex;
-// 	> a {
-// 		width: 100%;
-// 		display: flex;
-// 		@media screen and (max-width: map-get($grid-breakpoints,xl)) {
-// 			justify-content: center;
-// 		}
-// 	}
-// }
-// //Cart
-// .cart-entry-container {
-// 	$margin: 1em;
-// 	position: relative;
-// 	width: 100%;
-// 	text-overflow: ellipsis;
-// 	margin-bottom: 10px;
-// 	border-radius: 15px;
-// 	color: white;
-// 	background-color: black;
-// 	display: flex;
-// 	flex-direction: row;
-// 	justify-content: space-between;
-// 	align-items: center;
-// 	padding: $margin/2;
-// 	> .typeContainer {
-// 		margin: $margin;
-// 	}
-// 	> .descriptionContainer {
-// 		padding: $margin;
-// 		overflow: hidden;
-// 		flex-grow: 1;
-// 		justify-content: start;
-// 		> .description {
-// 			max-height: 75px;
-// 			text-overflow: ellipsis;
-// 			overflow: hidden;
-// 		}
-// 	}
-// 	> .priceContainer {
-// 		margin-right: $margin;
-// 	}
-// }
-// .btn-transparent {
-// 	font-size: 1.5em;
-// 	color: white;
-// 	&:hover {
-// 		color: rgb(172, 172, 172);
-// 	}
-// }
+@import '../../../index.scss';
+//Home
+.flyer-container-right {
+	> a {
+		justify-content: flex-end;
+	}
+}
+.flyer-container-left {
+	> a {
+		justify-content: flex-start;
+	}
+}
+.flyer-container-left,
+.flyer-container-right {
+	display: flex;
+	> a {
+		width: 100%;
+		display: flex;
+		@media screen and (max-width: map-get($grid-breakpoints,xl)) {
+			justify-content: center;
+		}
+	}
+}
+//Cart
+.cart-entry-container {
+	$margin: 1em;
+	position: relative;
+	width: 100%;
+	text-overflow: ellipsis;
+	margin-bottom: 10px;
+	border-radius: 15px;
+	color: white;
+	background-color: black;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	padding: $margin/2;
+	> .typeContainer {
+		margin: $margin;
+	}
+	> .descriptionContainer {
+		padding: $margin;
+		overflow: hidden;
+		flex-grow: 1;
+		justify-content: start;
+		> .description {
+			max-height: 75px;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+	}
+	> .priceContainer {
+		margin-right: $margin;
+	}
+}
+.btn-transparent {
+	font-size: 1.5em;
+	color: white;
+	&:hover {
+		color: rgb(172, 172, 172);
+	}
+}
