@@ -35,6 +35,7 @@ function AppTabsNavigation(props: {
 								//add to dropdown
 								hiddenNavs.push(entry.target.id);
 							}
+							console.log('tab translations', props.tabTranslations, hiddenNavs);
 							//call dropdown callback
 							props.setDropdownItems(
 								hiddenNavs.map((navId: string) => {

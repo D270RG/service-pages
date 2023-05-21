@@ -64,3 +64,8 @@ export interface ITranslations {
 	currencies: ICurrencyTranslations;
 	tabs: ITabTranslations;
 }
+
+export interface IFlyer {
+	id: string;
+	href: string;
+}

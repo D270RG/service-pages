@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import store from 'pages/store/store';
-import './tabs.scss';
 import { cartSlice } from 'pages/store/reducers';
 import { cartSelectors } from 'pages/store/selectors';
 import {

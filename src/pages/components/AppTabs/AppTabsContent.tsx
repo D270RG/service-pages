@@ -64,6 +64,8 @@ function AppTabsContent(props: { translations: ITranslations }) {
 				>,
 				pathKey
 			) => {
+				console.log('content translations', props.translations);
+				console.log('pathkey', pathKey);
 				tabs.push(
 					<Route
 						path={pathKey}

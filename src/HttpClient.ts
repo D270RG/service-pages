@@ -1,4 +1,4 @@
-import { IPriceList, IServiceDescs, ITranslations } from 'p@/common-types/common-types';
+import { IFlyer, IPriceList, IServiceDescs, ITranslations } from 'p@/common-types/common-types';
 
 //TODO: add common HttpService
 export class HttpClient {
@@ -64,6 +64,30 @@ export class HttpClient {
 					return JSON.parse(jsonData);
 				})
 				.then((data: ITranslations) => {
+					resolve(data);
+				})
+				.catch((err) => {
+					reject(err);
+					console.log(err.message);
+				});
+		});
+		return p;
+	}
+	public getFlyers() {
+		let p = new Promise<IFlyer[]>((resolve, reject) => {
+			fetch(`http://${this.serverAddress}/flyers`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+				.then((response: Response) => {
+					return response.json();
+				})
+				.then((jsonData: string) => {
+					return JSON.parse(jsonData);
+				})
+				.then((data: IFlyer[]) => {
 					resolve(data);
 				})
 				.catch((err) => {

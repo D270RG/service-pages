@@ -33,19 +33,12 @@ async function bodyParserWrap(req) {
 	});
 }
 
-app.post('/flyers', (req, res) => {
-	let exampleResponse = {
-		0123: {
-			titleId: cardTitle1,
-			textId: card1,
-			imageId: 'r1',
-		},
-		9217: {
-			titleId: cardTitle1,
-			textId: card1,
-			imageId: 'r1',
-		},
-	};
+app.get('/flyers', (req, res) => {
+	let exampleResponse = [
+		{ id: '0123', href: '/laptop-repair' },
+		{ id: '4567', href: '/phone-repair' },
+	];
+	res.status(200).json(JSON.stringify(exampleResponse));
 });
 app.post('/prices', express.json(), (req, res) => {
 	let exampleResponse = {
