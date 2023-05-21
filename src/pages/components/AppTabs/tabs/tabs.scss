@@ -1,13 +1,18 @@
 @import '../../../index.scss';
 //Home
 .flyer-container-right {
-	justify-content: flex-end;
+	> a {
+		justify-content: flex-end;
+	}
 }
 .flyer-container-left {
-	justify-content: flex-start;
+	> a {
+		justify-content: flex-start;
+	}
 }
 .flyer-container-left,
 .flyer-container-right {
+	display: flex;
 	> a {
 		width: 100%;
 		display: flex;
