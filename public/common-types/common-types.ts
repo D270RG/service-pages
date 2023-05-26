@@ -1,7 +1,3 @@
-export enum Languages {
-	ru = 'ru',
-	en = 'en',
-}
 export enum Currency {
 	rub = 'rub',
 	usd = 'usd',
@@ -19,7 +15,6 @@ export interface ICartItem {
 	price: number;
 	currency: Currency;
 	amount: number;
-	descriptionId: string;
 }
 export interface IPriceList {
 	[path: string]: ICartItem[];

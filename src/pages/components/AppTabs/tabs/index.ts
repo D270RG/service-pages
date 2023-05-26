@@ -15,6 +15,7 @@ PathKeys.forEach((pathKey: string) => {
 });
 console.log(TabMap);
 export const TabMapKeys = Array.from(TabMap.keys());
+export const TabMapValues = Array.from(TabMap.values());
 console.log(TabMap);
 
 export const unrenderedTabs = {

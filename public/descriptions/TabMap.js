@@ -6,3 +6,4 @@ export const TabPaths = {
 	PhoneRepair: 'phone-repair',
 };
 export const PathKeys = Object.keys(TabPaths);
+export const PathValues = Object.values(TabPaths);

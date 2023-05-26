@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Tab } from 'react-bootstrap';
 import { Route, Routes } from 'react-router';
-import { TabMap, TabMapKeys, unrenderedBuyButtons, unrenderedTitles } from './tabs';
+import { TabMap, TabMapKeys, TabMapValues, unrenderedBuyButtons, unrenderedTitles } from './tabs';
 import './AppTabs.scss';
-import Loading from 'pages/elements/loading/loading';
 import {
 	ICurrencyTranslations,
 	IGeneralTranslations,
 	IPriceList,
 	IServiceDescs,
 	ITabTranslation,
-	ITabTranslations,
 	ITranslations,
-	Languages,
 } from 'p@/common-types/common-types';
 import PriceTable from 'pages/elements/priceTable/PriceTable';
 import { HttpClient } from 'HttpClient';
+import Loading from 'pages/elements/loading/Loading';
+import NotFound from 'pages/elements/NotFound/NotFound';
 
 function AppTabsContent(props: { translations: ITranslations }) {
 	const [tabs, setTabs] = useState<JSX.Element[]>([]);
@@ -27,14 +26,14 @@ function AppTabsContent(props: { translations: ITranslations }) {
 
 	useEffect(() => {
 		renderTabs();
+		console.log('service descs change', serviceDescriptions);
 	}, [prices, serviceDescriptions]);
 	useEffect(() => {
 		fetchServiceDescs();
 		fetchPrices();
-		renderTabs();
 	}, []);
 	function fetchServiceDescs() {
-		httpClient.getServiceDescriptions().then((serviceDescs) => {
+		httpClient.getServiceDescriptions(navigator.language).then((serviceDescs) => {
 			console.log('setting serviceDescs', serviceDescs);
 			setServiceDescriptions(serviceDescs);
 		});
@@ -66,17 +65,21 @@ function AppTabsContent(props: { translations: ITranslations }) {
 			) => {
 				console.log('content translations', props.translations);
 				console.log('pathkey', pathKey);
+				console.log(
+					'prices',
+					prices,
+					'serviceDescs',
+					serviceDescriptions,
+					'ownProperty',
+					pathKey,
+					prices?.hasOwnProperty(pathKey) && serviceDescriptions
+				);
 				tabs.push(
 					<Route
-						path={pathKey}
+						path={`${pathKey}/*`}
 						element={
 							props.translations && (
-								<React.Suspense
-									fallback={
-										<div className='spinner-cont'>
-											<Loading />
-										</div>
-									}>
+								<React.Suspense fallback={<Loading />}>
 									{!unrenderedTitles.hasOwnProperty(pathKey) && (
 										<div>
 											<h2 className='my-3'>{props.translations.tabs[pathKey].title}</h2>
@@ -110,16 +113,20 @@ function AppTabsContent(props: { translations: ITranslations }) {
 			}
 		);
 		setTabs(tabs);
+		console.log('LOC', location.pathname.split('/')[1], TabMapKeys);
 	}
 	return (
 		<Tab.Container
 			defaultActiveKey={'/'}
-			activeKey={location.pathname.slice(
-				location.pathname.lastIndexOf('/') + 1,
-				location.pathname.length
-			)}>
+			activeKey={location.pathname
+				.replace(/\/$/, '')
+				.slice(
+					location.pathname.replace(/\/$/, '').lastIndexOf('/') + 1,
+					location.pathname.replace(/\/$/, '').length
+				)}>
 			<Tab.Content>
 				<Routes>{tabs}</Routes>
+				{!TabMapKeys.includes(location.pathname.split('/')[1]) && <NotFound />}
 			</Tab.Content>
 		</Tab.Container>
 	);

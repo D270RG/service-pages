@@ -2,8 +2,6 @@
 const path = require('path');
 
 module.exports = {
-	/* config for next-optimized-images */
-	// your config for other plugins or the general next.js here...
 	async rewrites() {
 		return [
 			// Rewrite everything else to use `pages/index`

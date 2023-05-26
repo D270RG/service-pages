@@ -8,7 +8,6 @@ import {
 	IGeneralTranslations,
 	IPriceList,
 	IServiceDescs,
-	Languages,
 } from 'p@/common-types/common-types';
 import { cartSelectors } from 'pages/store/selectors';
 
@@ -32,7 +31,7 @@ function PriceTable(props: {
 				<tr>
 					<td>
 						<div className='d-flex flex-column'>
-							<span>{props.serviceDescriptions[serviceEntry.descriptionId].description}</span>
+							<span>{props.serviceDescriptions[serviceEntry.id].description}</span>
 							<span className='show-col mt-2'>
 								{serviceEntry.price} {props.currencyTranslations[serviceEntry.currency]}
 							</span>

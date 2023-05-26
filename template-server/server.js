@@ -2,9 +2,9 @@ const PORT = 4000;
 
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const translations = require('./translations.json');
-
+const db = require('./database.client');
+const fc = require('./file.connector');
 const app = express();
 
 const corsOptions = {
@@ -32,135 +32,47 @@ async function bodyParserWrap(req) {
 		});
 	});
 }
+// TODO:
+// app.get('/paths', (req, res) => {
+// 	db.getPaths().then((pathRows) => {
+// 		let resObject = {};
+// 		pathRows.forEach((pathRow) => {
+// 			resObject[pathRow.component] = pathRow.path;
+// 		});
+// 		res.status(200), json(JSON.stringify(resObject));
+// 	});
+// });
 
 app.get('/flyers', (req, res) => {
-	let exampleResponse = [
-		{ id: '0123', href: '/laptop-repair' },
-		{ id: '4567', href: '/phone-repair' },
-	];
-	res.status(200).json(JSON.stringify(exampleResponse));
+	db.getFlyers().then((flyerRows) => {
+		res.status(200).json(JSON.stringify(flyerRows));
+	});
 });
 app.post('/prices', express.json(), (req, res) => {
-	let exampleResponse = {
-		'first-help': [
-			{ id: '123', type: 'Repair', price: 10, currency: 'rub', amount: 1, descriptionId: '123' },
-			{
-				id: '1234',
-				type: 'Repair',
-				price: 100,
-				currency: 'rub',
-				amount: 1,
-				descriptionId: '1234',
-			},
-			{
-				id: '12345',
-				type: 'Repair',
-				price: 1000,
-				currency: 'rub',
-				amount: 1,
-				descriptionId: '12345',
-			},
-		],
-		'laptop-repair': [
-			{
-				id: '456',
-				type: 'Windows',
-				price: 1000,
-				currency: 'rub',
-				amount: 1,
-				descriptionId: '456',
-			},
-			{
-				id: '4567',
-				type: 'Windows',
-				price: 100000,
-				currency: 'rub',
-				amount: 1,
-				descriptionId: '4567',
-			},
-		],
-		'phone-repair': [
-			{
-				id: '789',
-				type: 'Android',
-				price: 300,
-				currency: 'rub',
-				amount: 1,
-				descriptionId: '789',
-			},
-			{
-				id: '78910',
-				type: 'Android',
-				price: 200,
-				currency: 'rub',
-				amount: 1,
-				descriptionId: '78910',
-			},
-			{
-				id: '7891011',
-				type: 'Android',
-				price: 11,
-				currency: 'rub',
-				amount: 1,
-				descriptionId: '7891011',
-			},
-			{
-				id: '789101112',
-				type: 'Android',
-				price: 10000,
-				currency: 'rub',
-				amount: 1,
-				descriptionId: '789101112',
-			},
-		],
-	};
-	console.log('sending');
-	res.setHeader('Access-Control-Allow-Origin', '*');
-	res.status(200).json(JSON.stringify(exampleResponse));
+	db.getPrices(req.body.paths).then((priceRows) => {
+		let resObject = {};
+		resObject = { ...priceRows };
+		priceRows.forEach((priceRow) => {
+			//creating normalized data
+			if (!resObject.hasOwnProperty(priceRow.path)) {
+				resObject[priceRow.path] = [];
+			}
+			resObject[priceRow.path].push(priceRow);
+		});
+		console.log('sending');
+		res.setHeader('Access-Control-Allow-Origin', '*');
+		res.status(200).json(JSON.stringify(resObject));
+	});
 });
-app.get('/serviceDescriptions', (req, res) => {
-	console.log('sending descriptions');
-	let exampleResponse = {
-		123: {
-			name: 'Диагностика',
-			description: 'Диагностика устройства',
-		},
-		1234: {
-			name: 'Чистка',
-			description: 'Чистка устройства',
-		},
-		12345: {
-			name: 'Замена термопасты',
-			description: 'Замена термопасты на новую',
-		},
-		456: {
-			name: 'Замена SSD',
-			description: 'Замена SSD на новое',
-		},
-		4567: {
-			name: 'Замена матери',
-			description: 'Замена матери',
-		},
-		789: {
-			name: 'Замена экрана',
-			description: 'Замена экрана смартфона Android',
-		},
-		78910: {
-			name: 'Замена динамиков',
-			description: 'Замена динамиков телефона Android',
-		},
-		7891011: {
-			name: 'Рут',
-			description: 'Рут телефона Android',
-		},
-		789101112: {
-			name: 'Замена батареи',
-			description: 'Замена батареи телефона Android',
-		},
-	};
-	console.log('sending');
-	res.setHeader('Access-Control-Allow-Origin', '*');
-	res.status(200).json(JSON.stringify(exampleResponse));
+app.post('/serviceDescriptions', express.json(), (req, res) => {
+	let locale = req.body.locale;
+	console.log('requrested descs', locale);
+	if (translations.hasOwnProperty(locale)) {
+		console.log('sending descriptions', locale);
+		res.status(200).json(JSON.stringify(translations[locale].serviceDescriptions));
+	} else {
+		res.status(404);
+	}
 });
 app.post('/translations', express.json(), (req, res) => {
 	let locale = req.body.locale;

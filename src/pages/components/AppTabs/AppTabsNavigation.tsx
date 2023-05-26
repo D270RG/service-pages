@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { TabMap, unrenderedTabs } from './tabs/index';
 import './AppTabs.scss';
 
-import { ITabTranslations, Languages } from 'p@/common-types/common-types';
+import { ITabTranslations } from 'p@/common-types/common-types';
 import { InView } from 'react-intersection-observer';
 
 function AppTabsNavigation(props: {
@@ -61,16 +61,29 @@ function AppTabsNavigation(props: {
 				);
 		});
 		setNavs(navs);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+
+		console.log(
+			'path',
+			location.pathname
+				.slice(0, -1)
+				.slice(
+					location.pathname.slice(0, -1).lastIndexOf('/') + 1,
+					location.pathname.slice(0, -1).length
+				)
+		);
 	}, []);
 	return (
 		<div>
 			<Tab.Container
 				defaultActiveKey={'/'}
-				activeKey={location.pathname.slice(
-					location.pathname.lastIndexOf('/') + 1,
-					location.pathname.length
-				)}>
+				mountOnEnter={true}
+				unmountOnExit={true}
+				activeKey={location.pathname
+					.replace(/\/$/, '')
+					.slice(
+						location.pathname.replace(/\/$/, '').lastIndexOf('/') + 1,
+						location.pathname.replace(/\/$/, '').length
+					)}>
 				<Nav className='flex-row tabs-container'>{navs.length > 0 && navs}</Nav>
 			</Tab.Container>
 		</div>

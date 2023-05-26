@@ -1,6 +1,6 @@
 import Flyer from 'pages/elements/flyer/Flyer';
 import Grid from 'pages/elements/grid/Grid';
-import Loading from 'pages/elements/loading/loading';
+import Loading from 'pages/elements/loading/Loading';
 import TextAnim from 'pages/elements/TextAnim/TextAnim';
 import Image from 'next/image';
 import React, { FunctionComponent, useEffect, useState } from 'react';

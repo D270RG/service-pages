@@ -1,7 +1,7 @@
 import * as Components from 'pages/components/index';
 import { ITranslations } from 'p@/common-types/common-types';
 import { TabMapKeys } from 'pages/components/AppTabs/tabs';
-import Loading from 'pages/elements/loading/loading';
+import Loading from 'pages/elements/loading/Loading';
 import Logo from 'pages/elements/smallLogo/Logo';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -46,13 +46,15 @@ export default function AppWithStore() {
 					/>
 				)}
 				{translations ? (
-					<div className='padded-page'>
-						<Components.AppTabsOutlet translations={translations} />
+					<div>
+						<div className='padded-page'>
+							<Components.AppTabsOutlet translations={translations} />
+						</div>
+						<Components.AppFooter tabLinks={TabMapKeys} />
 					</div>
 				) : (
-					<Loading />
+					<Loading pageSuspense={true} />
 				)}
-				<Components.AppFooter tabLinks={TabMapKeys} />
 			</BrowserRouter>
 		</SafeHydrate>
 	);

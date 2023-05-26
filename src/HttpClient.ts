@@ -7,7 +7,7 @@ export class HttpClient {
 		let p = new Promise<IPriceList>((resolve, reject) => {
 			fetch(`http://${this.serverAddress}/prices`, {
 				method: 'POST',
-				body: JSON.stringify(filteredTabMapKeys),
+				body: JSON.stringify({ paths: filteredTabMapKeys }),
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -18,6 +18,10 @@ export class HttpClient {
 				.then((jsonData: string) => {
 					return JSON.parse(jsonData);
 				})
+				.then((data) => {
+					console.log('data price', data);
+					return data;
+				})
 				.then((data: IPriceList) => resolve(data))
 				.catch((err) => {
 					reject(err);
@@ -26,10 +30,14 @@ export class HttpClient {
 		});
 		return p;
 	}
-	public getServiceDescriptions() {
+	public getServiceDescriptions(locale: string) {
 		let p = new Promise<IServiceDescs>((resolve, reject) => {
 			fetch(`http://${this.serverAddress}/serviceDescriptions`, {
-				method: 'GET',
+				method: 'POST',
+				body: JSON.stringify({ locale: locale }),
+				headers: {
+					'Content-Type': 'application/json',
+				},
 			})
 				.then((response: Response) => {
 					return response.json();
@@ -38,6 +46,7 @@ export class HttpClient {
 					return JSON.parse(jsonData);
 				})
 				.then((data: IServiceDescs) => {
+					console.log('resolving service descs', data);
 					resolve(data);
 				})
 				.catch((err) => {

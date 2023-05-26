@@ -8,12 +8,10 @@ import {
 	IGeneralTranslations,
 	IServiceDescs,
 	ITabTranslation,
-	Languages,
-	ServiceType,
 } from 'p@/common-types/common-types';
 import { Button } from 'react-bootstrap';
 import { HttpClient } from 'HttpClient';
-import Loading from 'pages/elements/loading/loading';
+import Loading from 'pages/elements/loading/Loading';
 import TypeContainer from 'pages/elements/typeContainer/TypeContainer';
 
 function Cart(props: {
@@ -29,7 +27,7 @@ function Cart(props: {
 	);
 	const httpClient = new HttpClient();
 	function fetchServiceDescs() {
-		httpClient.getServiceDescriptions().then((serviceDescs) => {
+		httpClient.getServiceDescriptions(navigator.language).then((serviceDescs) => {
 			setServiceDescriptions(serviceDescs);
 		});
 	}
@@ -69,11 +67,9 @@ function Cart(props: {
 						{serviceDescriptions ? (
 							<div className='d-flex align-items-start flex-column descriptionContainer'>
 								<div>
-									<h2>{serviceDescriptions[itemEntry.descriptionId].name}</h2>
+									<h2>{serviceDescriptions[itemEntry.id].name}</h2>
 								</div>
-								<div className='description'>
-									{serviceDescriptions[itemEntry.descriptionId].description}
-								</div>
+								<div className='description'>{serviceDescriptions[itemEntry.id].description}</div>
 							</div>
 						) : (
 							<Loading />
