@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Tab } from 'react-bootstrap';
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 import { TabMap, TabMapKeys, TabMapValues, unrenderedBuyButtons, unrenderedTitles } from './tabs';
 import './AppTabs.scss';
 import {
@@ -76,10 +76,10 @@ function AppTabsContent(props: { translations: ITranslations }) {
 				);
 				tabs.push(
 					<Route
-						path={`${pathKey}/*`}
+						path={`${pathKey}`}
 						element={
 							props.translations && (
-								<React.Suspense fallback={<Loading />}>
+								<React.Suspense fallback={<Loading pageSuspense={true} />}>
 									{!unrenderedTitles.hasOwnProperty(pathKey) && (
 										<div>
 											<h2 className='my-3'>{props.translations.tabs[pathKey].title}</h2>
@@ -112,9 +112,23 @@ function AppTabsContent(props: { translations: ITranslations }) {
 				);
 			}
 		);
+		tabs.push(
+			<Route
+				path='*'
+				element={
+					<Navigate
+						to='/'
+						replace
+					/>
+				}
+			/>
+		);
 		setTabs(tabs);
 		console.log('LOC', location.pathname.split('/')[1], TabMapKeys);
 	}
+	useEffect(() => {
+		console.log('LOC', location.pathname.split('/')[1], TabMapKeys);
+	}, [location.pathname]);
 	return (
 		<Tab.Container
 			defaultActiveKey={'/'}
@@ -126,7 +140,6 @@ function AppTabsContent(props: { translations: ITranslations }) {
 				)}>
 			<Tab.Content>
 				<Routes>{tabs}</Routes>
-				{!TabMapKeys.includes(location.pathname.split('/')[1]) && <NotFound />}
 			</Tab.Content>
 		</Tab.Container>
 	);
