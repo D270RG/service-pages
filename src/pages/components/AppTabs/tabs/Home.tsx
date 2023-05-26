@@ -23,11 +23,13 @@ function Home(props: {
 	const httpClient = new HttpClient();
 	useEffect(() => {
 		httpClient.getFlyers().then((flyers: IFlyer[]) => {
+			console.log('received flyers', flyers);
 			setFlyers([...flyers]);
 		});
 	}, []);
 	useEffect(() => {
 		renderFlyers();
+		console.log(props.tabTranslate);
 	}, [flyers]);
 	function renderFlyers() {
 		let flyersJSX: JSX.Element[] = [];

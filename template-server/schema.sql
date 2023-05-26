@@ -16,4 +16,5 @@ CREATE TABLE Flyers (
 -- );
 
 INSERT INTO Prices(id,type,price,currency,amount,path) VALUES ('example1','Repair',1200,'rub',1,'first-help'),('example2','Repair',120,'rub',1,'first-help');
+INSERT INTO Flyers(id,href) VALUES ('example1','laptop-repair'),('example2','phone-repair');
 -- INSERT INTO Paths(component,path) values ('Home','home'),('Cart','cart'),('FirstHelp','first-help'),('LaptopRepair','laptop-repair'),('PhoneRepair','phone-repair'));
