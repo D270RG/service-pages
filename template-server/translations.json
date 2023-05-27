@@ -10,16 +10,6 @@
 			"rub": "руб.",
 			"usd": "usd."
 		},
-		"serviceDescriptions": {
-			"example1": {
-				"name": "Example1",
-				"description": "Диагностика устройства"
-			},
-			"example2": {
-				"name": "Example2",
-				"description": "Чистка устройства"
-			}
-		},
 		"tabs": {
 			"home": {
 				"title": "Домой",

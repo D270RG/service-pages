@@ -2,7 +2,6 @@ const PORT = 4000;
 
 const express = require('express');
 const cors = require('cors');
-const translations = require('./translations.json');
 const db = require('./database.client');
 const fc = require('./file.connector');
 const app = express();
@@ -66,16 +65,18 @@ app.post('/prices', express.json(), (req, res) => {
 });
 app.post('/serviceDescriptions', express.json(), (req, res) => {
 	let locale = req.body.locale;
+	const serviceDescriptions = require('./serviceDescriptions.json');
 	console.log('requrested descs', locale);
 	if (translations.hasOwnProperty(locale)) {
 		console.log('sending descriptions', locale);
-		res.status(200).json(JSON.stringify(translations[locale].serviceDescriptions));
+		res.status(200).json(JSON.stringify(serviceDescriptions[locale].serviceDescriptions));
 	} else {
 		res.status(404);
 	}
 });
 app.post('/translations', express.json(), (req, res) => {
 	let locale = req.body.locale;
+	const translations = require('./translations.json');
 	console.log('translations req', req.body);
 	if (translations.hasOwnProperty(locale)) {
 		res.status(200).json(JSON.stringify(translations[locale]));

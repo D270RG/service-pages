@@ -1,0 +1,12 @@
+{
+	"ru-RU": {
+		"example1": {
+			"name": "Example1",
+			"description": "Диагностика устройства"
+		},
+		"example2": {
+			"name": "Example2",
+			"description": "Чистка устройства"
+		}
+	}
+}

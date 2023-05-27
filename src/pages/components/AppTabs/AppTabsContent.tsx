@@ -15,41 +15,19 @@ import PriceTable from 'pages/elements/priceTable/PriceTable';
 import { HttpClient } from 'HttpClient';
 import Loading from 'pages/elements/loading/Loading';
 import NotFound from 'pages/elements/NotFound/NotFound';
+import { useSelector } from 'react-redux';
+import { selectPrices, selectServiceDescriptions } from 'pages/store/selectors';
 
 function AppTabsContent(props: { translations: ITranslations }) {
 	const [tabs, setTabs] = useState<JSX.Element[]>([]);
-	const [prices, setPrices] = useState<IPriceList | undefined>(undefined);
-	const [serviceDescriptions, setServiceDescriptions] = useState<IServiceDescs | undefined>(
-		undefined
-	);
-	const httpClient = new HttpClient();
+	const serviceDescriptions = useSelector(selectServiceDescriptions);
+	const prices = useSelector(selectPrices);
 
 	useEffect(() => {
 		renderTabs();
 		console.log('service descs change', serviceDescriptions);
 	}, [prices, serviceDescriptions]);
-	useEffect(() => {
-		fetchServiceDescs();
-		fetchPrices();
-	}, []);
-	function fetchServiceDescs() {
-		httpClient.getServiceDescriptions(navigator.language).then((serviceDescs) => {
-			console.log('setting serviceDescs', serviceDescs);
-			setServiceDescriptions(serviceDescs);
-		});
-	}
-	function fetchPrices() {
-		httpClient
-			.getPrices(TabMapKeys.filter((TabMapKey) => !unrenderedBuyButtons.hasOwnProperty(TabMapKey)))
-			.then((priceData) => {
-				console.log('price data', priceData);
-				const asArray = Object.entries(priceData);
-				const filtered = asArray.filter(([key, value]) => {
-					return !unrenderedBuyButtons.hasOwnProperty(key);
-				});
-				setPrices(Object.fromEntries(filtered));
-			});
-	}
+
 	function renderTabs() {
 		const tabs: JSX.Element[] = [];
 		TabMap.forEach(
