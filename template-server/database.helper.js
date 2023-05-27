@@ -4,9 +4,9 @@ function emptyOrRows(rows) {
 	}
 	return rows;
 }
-function emptyOrRows(rows) {
+function emptyOrUndefined(rows) {
 	if (!rows) {
-		return [];
+		return undefined;
 	}
 	return rows;
 }

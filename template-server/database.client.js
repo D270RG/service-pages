@@ -49,12 +49,12 @@ async function addPrice(priceWithoutId) {
 			${priceWithoutId.currency},
 			${priceWithoutId.amount})`
 	);
-	return Helper.emptyOrRows(rows);
+	return Helper.emptyOrUndefined(rows);
 }
 async function deletePrice(id) {
 	const rows = await Connector.set(`DELETE FROM Prices WHERE id=${id}`);
 
-	return Helper.emptyOrRows(rows);
+	return Helper.emptyOrUndefined(rows);
 }
 
 async function getFlyers() {
@@ -71,11 +71,11 @@ async function addFlyer(flyerWithoutId) {
 			(${uuid},
 			${flyerWithoutId.href})`
 	);
-	return Helper.emptyOrRows(rows);
+	return { rows: Helper.emptyOrUndefined(rows), id: uuid };
 }
 async function deleteFlyer(id) {
 	const rows = await Connector.set(`DELETE FROM Flyers WHERE id=${id}`);
-	return Helper.emptyOrRows(rows);
+	return { rows: Helper.emptyOrUndefined(rows) };
 }
 
 module.exports = {

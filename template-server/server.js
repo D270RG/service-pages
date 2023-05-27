@@ -14,23 +14,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-async function bodyParser(req, callback) {
-	req.setEncoding('utf8');
-	const rb = [];
-	req.on('data', (chunks) => {
-		rb.push(chunks);
-	});
-	req.on('end', function (result) {
-		return callback(rb[0]);
-	});
-}
-async function bodyParserWrap(req) {
-	return new Promise((resolve, reject) => {
-		bodyParser(req, function (result) {
-			resolve(result);
-		});
-	});
-}
 // TODO:
 // app.get('/paths', (req, res) => {
 // 	db.getPaths().then((pathRows) => {
@@ -42,6 +25,49 @@ async function bodyParserWrap(req) {
 // 	});
 // });
 
+//UPDATE
+app.post('/addFlyer', express.json(), (req, res) => {
+	const flyer = req.body.flyer;
+	db.addFlyer(flyer).then((insertionResult) => {
+		if (insertionResult.rows) {
+			const insertion1 = fc.insertJSON(
+				'translations',
+				['ru-RU', 'tabs', 'home', 'titles', insertionResult.id],
+				flyer.title
+			);
+			const insertion2 = fc.insertJSON(
+				'translations',
+				['ru-RU', 'tabs', 'home', 'texts', insertionResult.id],
+				flyer.text
+			);
+			if (insertion1 && insertion2) {
+				res.status(200);
+			} else {
+				res.status(503);
+			}
+		} else {
+			res.status(503);
+		}
+	});
+});
+app.post('/deleteFlyer', express.json(), (req, res) => {
+	const id = req.body.id;
+	db.deleteFlyer(id).then((deletionResult) => {
+		if (deletionResult.rows) {
+			const deletion1 = fc.deleteJSON('translations', ['ru-RU', 'tabs', 'home', 'titles', id]);
+			const deletion2 = fc.deleteJSON('translations', ['ru-RU', 'tabs', 'home', 'texts', id]);
+			if (deletion1 && deletion2) {
+				res.status(200);
+			} else {
+				res.status(503);
+			}
+		} else {
+			res.status(503);
+		}
+	});
+});
+
+//READ
 app.get('/flyers', (req, res) => {
 	db.getFlyers().then((flyerRows) => {
 		res.status(200).json(JSON.stringify(flyerRows));

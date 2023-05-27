@@ -27,12 +27,14 @@ export interface IServiceDescs {
 }
 
 export interface IFlyer {
-	titleId: string;
-	textId: string;
-	imageId: string;
+	id: string;
 }
 export interface IFlyers {
 	[id: string]: IFlyer;
+}
+export interface IFlyerPayload {
+	title: string;
+	text: string;
 }
 
 export interface IGeneralTranslations {
