@@ -10,7 +10,7 @@ function TextAnim(props: { text: string }) {
 	return (
 		<Container className='text-container my-5'>
 			<SvgAnim />
-			<div className={animFont.className + ' text'}>
+			<div className={animFont.className + ' text title'}>
 				<div className='background-container'></div>
 				{props.text}
 			</div>
