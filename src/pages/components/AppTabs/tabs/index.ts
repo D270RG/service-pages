@@ -18,14 +18,11 @@ export const TabMapValues = Array.from(TabMap.values());
 export const unrenderedTabs = {
 	home: true,
 	cart: true,
-	login: true,
 };
 export const unrenderedTitles = {
 	home: true,
-	login: true,
 };
 export const unrenderedBuyButtons = {
 	home: true,
 	cart: true,
-	login: true,
 };

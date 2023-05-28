@@ -66,10 +66,14 @@ export interface ITabTranslation {
 export interface ITabTranslations {
 	[tabKey: string]: ITabTranslation;
 }
+export interface ILoginFormTranslations {
+	[key: string]: string;
+}
 export interface ITranslations {
 	general: IGeneralTranslations;
 	currencies: ICurrencyTranslations;
 	tabs: ITabTranslations;
+	loginForm: ILoginFormTranslations;
 }
 
 export interface IFlyer {

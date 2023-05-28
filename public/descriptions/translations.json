@@ -10,6 +10,23 @@
 			"rub": "руб.",
 			"usd": "usd."
 		},
+		"loginForm": {
+			"loginTitle": "Вход",
+			"registerTitle": "Регистрация",
+			"submitLogin": "Войти",
+			"submitRegister": "Зарегистрироваться",
+			"cancel": "Отмена",
+			"email": "E-Mail",
+			"password": "Пароль",
+			"passwordConfirm": "Повторите пароль",
+			"notRegistered": "Не зарегистрированы?",
+			"alreadyHaveAccount": "Уже есть аккаунт?",
+			"createAccount": "Создать аккаунт",
+			"invalidLogin": "Некорректный e-mail",
+			"invalidPassword": "Пароль должен содержать минимум 6 символов",
+			"invalidPasswordRepeat": "Пароли не совпадают!",
+			"required": "Обязательное поле"
+		},
 		"tabs": {
 			"home": {
 				"title": "Домой",
@@ -39,18 +56,6 @@
 					"isEmpty": "Корзина пуста"
 				},
 				"titles": {}
-			},
-			"login": {
-				"title": "Вход",
-				"texts": {
-					"passwordTooShort": "Пароль должен содержать минимум 6 символов",
-					"emailIsInvalid": "Введенный e-mail недействителен",
-					"required": "Заполните это поле"
-				},
-				"titles": {
-					"login": "Войти",
-					"register": "Зарегистрироваться"
-				}
 			}
 		}
 	}

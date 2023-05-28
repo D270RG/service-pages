@@ -1,0 +1,82 @@
+@import '../../index.scss';
+//--form--
+.clickbox {
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(0, 0, 0, 0.632);
+	left: 0px;
+	top: 0px;
+	z-index: 99999;
+}
+.bottom-container {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+.form-button-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	> button {
+		margin-left: 0.5em;
+	}
+}
+.form-placeholder {
+	@media (max-width: map-get($grid-breakpoints,sm)) {
+		width: 100%;
+	}
+	//position styles
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 400px;
+
+	//styling styles
+	padding: 1rem;
+	padding-bottom: 0.5rem;
+	background-color: rgb(242, 242, 242);
+	border-radius: 5px;
+
+	//children elements
+	> .form-close {
+		position: absolute;
+		padding: 0px;
+		margin: 0px;
+		top: 5px;
+		right: 10px;
+		background-color: transparent;
+		color: rgb(20, 20, 20);
+		:hover {
+			color: rgb(117, 117, 117);
+		}
+	}
+}
+.popup-form {
+	//position styles
+	position: relative;
+	height: 100%;
+	width: 100%;
+	left: 0px;
+	top: 0px;
+
+	//children elements
+	> input {
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+	> label {
+		color: rgb(48, 48, 48);
+	}
+}
+.float-form {
+	padding: 10px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	background-color: rgb(255, 255, 255);
+	width: 100%;
+	position: fixed;
+	bottom: 0px;
+}

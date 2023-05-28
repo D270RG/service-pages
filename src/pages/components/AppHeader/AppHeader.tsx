@@ -2,7 +2,9 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
+import store from 'pages/store/store';
 import './AppHeader.scss';
+import { formSlice } from 'pages/store/reducers';
 
 function AppHeader(props: {
 	navElement: React.ReactElement;
@@ -37,10 +39,13 @@ function AppHeader(props: {
 						<i className='bi bi-basket3-fill'></i>
 					</Button>
 				</Link>
+
 				<Link
-					to='/login'
+					to='#'
 					className='ps-1'>
-					<Button variant='outline-dark'>
+					<Button
+						variant='outline-dark'
+						onClick={() => store.dispatch(formSlice.actions.setVisibility({ visible: true }))}>
 						<i className='bi bi-person-fill'></i>
 					</Button>
 				</Link>

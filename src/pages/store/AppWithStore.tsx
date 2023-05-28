@@ -8,9 +8,12 @@ import { BrowserRouter } from 'react-router-dom';
 import { getPrices } from './effects';
 import store from './store';
 import translations from 'p@/descriptions/translations.json';
+import ModalForm from 'pages/elements/form/ModalForm';
+import { selectFormVisibility } from './selectors';
+import { useSelector } from 'react-redux';
 export default function AppWithStore() {
 	const [dropdownItems, setDropdownItems] = useState<JSX.Element[]>([]);
-
+	const formVisibility = useSelector(selectFormVisibility);
 	useEffect(() => {
 		store.dispatch(
 			getPrices({
@@ -42,6 +45,9 @@ export default function AppWithStore() {
 						<Components.AppTabsOutlet translations={translations[navigator.language]} />
 					</div>
 					<Components.AppFooter tabLinks={TabMapKeys} />
+					{formVisibility && (
+						<ModalForm formTranslations={translations[navigator.language].loginForm} />
+					)}
 				</div>
 			) : (
 				<Loading pageSuspense={true} />

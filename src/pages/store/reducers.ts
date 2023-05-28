@@ -27,10 +27,13 @@ interface PricesActionPayload {
 	prices?: IPriceList;
 	error?: Error;
 }
+
+interface FormActionPayload {
+	visible: boolean;
+}
 //----------------------------------states
-interface ILocaleInitialState {
-	locale: ITranslations | undefined;
-	error?: Error;
+interface IFormInitialState {
+	visible: boolean;
 }
 interface IPricesInitialState {
 	prices: IPriceList | undefined;
@@ -41,7 +44,9 @@ export const pricesInitialState: IPricesInitialState = {
 	prices: undefined,
 	error: undefined,
 };
-
+export const formInitialState: IFormInitialState = {
+	visible: false,
+};
 export const cartAdapter = createEntityAdapter<ICartItem>({
 	// Assume IDs are stored in a field other than `item.id`
 	selectId: (item) => item.id,
@@ -88,11 +93,20 @@ export const pricesSlice = createSlice({
 	initialState: pricesInitialState,
 	reducers: {
 		getPricesSuccess(state, action: PayloadAction<PricesActionPayload>) {
-			console.log('get prices success');
 			state.prices = action.payload.prices;
 		},
 		getPricesError(state, action: PayloadAction<PricesActionPayload>) {
 			state.error = action.payload.error;
+		},
+	},
+});
+export const formSlice = createSlice({
+	name: 'form',
+	initialState: formInitialState,
+	reducers: {
+		setVisibility(state, action: PayloadAction<FormActionPayload>) {
+			state.visible = action.payload.visible;
+			console.log(state.visible);
 		},
 	},
 });

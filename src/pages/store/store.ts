@@ -1,9 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { cartSlice, pricesSlice } from './reducers';
+import { cartSlice, formSlice, pricesSlice } from './reducers';
 let store = configureStore({
 	reducer: {
 		cartReducer: cartSlice.reducer,
 		pricesReducer: pricesSlice.reducer,
+		formReducer: formSlice.reducer,
 	},
 });
 export default store;
