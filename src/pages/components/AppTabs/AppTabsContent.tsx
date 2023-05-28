@@ -6,8 +6,6 @@ import './AppTabs.scss';
 import {
 	ICurrencyTranslations,
 	IGeneralTranslations,
-	IPriceList,
-	IServiceDescs,
 	ITabTranslation,
 	ITranslations,
 } from 'p@/common-types/common-types';
@@ -16,17 +14,15 @@ import { HttpClient } from 'HttpClient';
 import Loading from 'pages/elements/loading/Loading';
 import NotFound from 'pages/elements/NotFound/NotFound';
 import { useSelector } from 'react-redux';
-import { selectPrices, selectServiceDescriptions } from 'pages/store/selectors';
+import { selectPrices } from 'pages/store/selectors';
 
 function AppTabsContent(props: { translations: ITranslations }) {
 	const [tabs, setTabs] = useState<JSX.Element[]>([]);
-	const serviceDescriptions = useSelector(selectServiceDescriptions);
 	const prices = useSelector(selectPrices);
 
 	useEffect(() => {
 		renderTabs();
-		console.log('service descs change', serviceDescriptions);
-	}, [prices, serviceDescriptions]);
+	}, [prices]);
 
 	function renderTabs() {
 		const tabs: JSX.Element[] = [];
@@ -41,17 +37,6 @@ function AppTabsContent(props: { translations: ITranslations }) {
 				>,
 				pathKey
 			) => {
-				console.log('content translations', props.translations);
-				console.log('pathkey', pathKey);
-				console.log(
-					'prices',
-					prices,
-					'serviceDescs',
-					serviceDescriptions,
-					'ownProperty',
-					pathKey,
-					prices?.hasOwnProperty(pathKey) && serviceDescriptions
-				);
 				tabs.push(
 					<Route
 						path={`${pathKey}`}
@@ -69,12 +54,10 @@ function AppTabsContent(props: { translations: ITranslations }) {
 										currencyTranslate={props.translations.currencies}
 									/>
 									{prices
-										? prices.hasOwnProperty(pathKey) &&
-										  serviceDescriptions && (
+										? prices.hasOwnProperty(pathKey) && (
 												<PriceTable
 													priceInfo={prices}
 													path={pathKey}
-													serviceDescriptions={serviceDescriptions}
 													generalTranslations={props.translations.general}
 													currencyTranslations={props.translations.currencies}
 												/>

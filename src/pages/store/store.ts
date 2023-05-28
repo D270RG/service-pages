@@ -1,11 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { cartSlice, localeSlice, pricesSlice, serviceDescriptionsSlice } from './reducers';
+import { cartSlice, pricesSlice } from './reducers';
 let store = configureStore({
 	reducer: {
 		cartReducer: cartSlice.reducer,
-		serviceDescriptionsReducer: serviceDescriptionsSlice.reducer,
 		pricesReducer: pricesSlice.reducer,
-		localeReducer: localeSlice.reducer,
 	},
 });
 export default store;

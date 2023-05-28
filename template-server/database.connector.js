@@ -19,13 +19,13 @@ async function read(query) {
 	}
 }
 
-async function set(query, values) {
+async function set(query) {
 	let conn;
 	try {
 		conn = await pool.getConnection();
 
-		const res = await conn.query(query, values);
-		return res;
+		const res = await conn.query(query);
+		return res.changedRows;
 	} finally {
 		if (conn) conn.release();
 	}

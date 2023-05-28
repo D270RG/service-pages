@@ -22,7 +22,7 @@ function Home(props: {
 	const [renderedFlyers, setRenderedFlyers] = useState<JSX.Element[]>([]);
 	const httpClient = new HttpClient();
 	useEffect(() => {
-		httpClient.getFlyers().then((flyers: IFlyer[]) => {
+		httpClient.getFlyers(navigator.language).then((flyers: IFlyer[]) => {
 			console.log('received flyers', flyers);
 			setFlyers([...flyers]);
 		});
@@ -37,13 +37,13 @@ function Home(props: {
 			flyersJSX.push(
 				<div className={index % 2 == 0 ? 'flyer-container-right' : 'flyer-container-left'}>
 					<Flyer
-						title={props.tabTranslate.titles[flyer.id]}
+						title={flyer.title}
 						contentImage={
 							<Image
 								src={require(`p@/images/${flyer.id}.png`)}
-								alt={props.tabTranslate.titles[flyer.id]}></Image>
+								alt={flyer.href}></Image>
 						}
-						contentText={props.tabTranslate.texts[flyer.id]}
+						contentText={flyer.text}
 						href={flyer.href}
 					/>
 				</div>

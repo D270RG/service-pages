@@ -6,7 +6,6 @@ import {
 	ICartItem,
 	ICurrencyTranslations,
 	IGeneralTranslations,
-	IServiceDescs,
 	ITabTranslation,
 } from 'p@/common-types/common-types';
 import { Button } from 'react-bootstrap';
@@ -22,17 +21,7 @@ function Cart(props: {
 	const [cartItems, setCartItems] = useState<ICartItem[]>([]);
 	const [price, setPrice] = useState<number | undefined>(undefined);
 	const [priceCurrency, setPriceCurrency] = useState<string>('');
-	const [serviceDescriptions, setServiceDescriptions] = useState<IServiceDescs | undefined>(
-		undefined
-	);
-	const httpClient = new HttpClient();
-	function fetchServiceDescs() {
-		httpClient.getServiceDescriptions(navigator.language).then((serviceDescs) => {
-			setServiceDescriptions(serviceDescs);
-		});
-	}
 	useEffect(() => {
-		fetchServiceDescs();
 		setCartItems(cartSelectors.selectAll(store.getState()));
 	}, []);
 	useEffect(() => {
@@ -64,16 +53,12 @@ function Cart(props: {
 						key={itemEntry.id}
 						className='cart-entry-container'>
 						<TypeContainer type={itemEntry.type} />
-						{serviceDescriptions ? (
-							<div className='d-flex align-items-start flex-column descriptionContainer'>
-								<div>
-									<h2>{serviceDescriptions[itemEntry.id].name}</h2>
-								</div>
-								<div className='description'>{serviceDescriptions[itemEntry.id].description}</div>
+						<div className='d-flex align-items-start flex-column descriptionContainer'>
+							<div>
+								<h2>{itemEntry.name}</h2>
 							</div>
-						) : (
-							<Loading />
-						)}
+							<div className='description'>{itemEntry.description}</div>
+						</div>
 						<div className='priceContainer'>
 							<h2>
 								{itemEntry.price} {props.currencyTranslate[itemEntry.currency]}

@@ -1,13 +1,6 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import {
-	Currency,
-	ICartItem,
-	IPriceList,
-	IServiceDescs,
-	ITranslations,
-	ServiceType,
-} from 'p@/common-types/common-types';
+import { ICartItem, IPriceList, ITranslations } from 'p@/common-types/common-types';
 
 //----------------------------------payload interfaces
 interface LocaleActionPayload {
@@ -30,11 +23,6 @@ interface AmountMinusPayload {
 	amount: number;
 }
 
-interface ServiceDescriptionsActionPayload {
-	serviceDescriptions?: IServiceDescs;
-	error?: Error;
-}
-
 interface PricesActionPayload {
 	prices?: IPriceList;
 	error?: Error;
@@ -44,22 +32,11 @@ interface ILocaleInitialState {
 	locale: ITranslations | undefined;
 	error?: Error;
 }
-interface IServiceDescriptionsInitialState {
-	serviceDescriptions: IServiceDescs | undefined;
-	error?: Error;
-}
 interface IPricesInitialState {
 	prices: IPriceList | undefined;
 	error?: Error;
 }
-export const localeInitialState: ILocaleInitialState = {
-	locale: undefined,
-	error: undefined,
-};
-export const serviceDescriptionsInitialState: IServiceDescriptionsInitialState = {
-	serviceDescriptions: undefined,
-	error: undefined,
-};
+
 export const pricesInitialState: IPricesInitialState = {
 	prices: undefined,
 	error: undefined,
@@ -103,31 +80,6 @@ export const cartSlice = createSlice({
 					amount: cartItem.amount - action.payload.amount,
 				});
 			}
-		},
-	},
-});
-export const localeSlice = createSlice({
-	name: 'locale',
-	initialState: localeInitialState,
-	reducers: {
-		getLocaleSuccess(state, action: PayloadAction<LocaleActionPayload>) {
-			console.log('get locale success');
-			state.locale = action.payload.locale;
-		},
-		getLocaleError(state, action: PayloadAction<LocaleActionPayload>) {
-			state.error = action.payload.error;
-		},
-	},
-});
-export const serviceDescriptionsSlice = createSlice({
-	name: 'serviceDescriptions',
-	initialState: serviceDescriptionsInitialState,
-	reducers: {
-		getServiceDescriptionsSuccess(state, action: PayloadAction<ServiceDescriptionsActionPayload>) {
-			state.serviceDescriptions = action.payload.serviceDescriptions;
-		},
-		getServiceDescriptionsError(state, action: PayloadAction<ServiceDescriptionsActionPayload>) {
-			state.error = action.payload.error;
 		},
 	},
 });

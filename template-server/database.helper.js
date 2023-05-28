@@ -4,11 +4,11 @@ function emptyOrRows(rows) {
 	}
 	return rows;
 }
-function emptyOrUndefined(rows) {
-	if (!rows) {
-		return undefined;
+function checkAffected(affected) {
+	if (affected === 0) {
+		return false;
 	}
-	return rows;
+	return true;
 }
 
-module.exports = { emptyOrRows };
+module.exports = { emptyOrRows, checkAffected };

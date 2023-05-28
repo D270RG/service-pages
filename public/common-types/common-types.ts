@@ -15,19 +15,27 @@ export interface ICartItem {
 	price: number;
 	currency: Currency;
 	amount: number;
+	name: string;
+	description: string;
 }
 export interface IPriceList {
 	[path: string]: ICartItem[];
 }
-export interface IServiceDescs {
-	[key: string]: {
-		name: string;
-		description: string;
-	};
+export interface ICartItemPayload {
+	type: ServiceType;
+	price: number;
+	currency: Currency;
+	amount: number;
+	name: string;
+	description: string;
+	language: string;
 }
 
 export interface IFlyer {
 	id: string;
+	title: string;
+	text: string;
+	href: string;
 }
 export interface IFlyers {
 	[id: string]: IFlyer;
@@ -35,6 +43,8 @@ export interface IFlyers {
 export interface IFlyerPayload {
 	title: string;
 	text: string;
+	href: string;
+	language: string;
 }
 
 export interface IGeneralTranslations {
