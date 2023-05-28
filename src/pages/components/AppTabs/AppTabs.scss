@@ -31,7 +31,11 @@
 	overflow: hidden;
 }
 .tab-content {
-	min-height: 88vh;
+	min-height: calc(100vh - 50px - 2em);
+	margin-top: 1em;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 .dropdown {
 	max-width: 30px;

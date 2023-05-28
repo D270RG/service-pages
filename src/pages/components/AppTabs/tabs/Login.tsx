@@ -5,12 +5,12 @@ import {
 } from 'p@/common-types/common-types';
 import React, { FunctionComponent } from 'react';
 
-function FirstHelp(props: {
+function Login(props: {
 	tabTranslate: ITabTranslation;
 	generalTranslate: IGeneralTranslations;
 	currencyTranslate: ICurrencyTranslations;
 }) {
-	return <div className='inlineText'>{props.tabTranslate.texts.test1}</div>;
+	return <div>{props.tabTranslate.texts.login}</div>;
 }
 
-export default FirstHelp as FunctionComponent;
+export default Login as FunctionComponent;

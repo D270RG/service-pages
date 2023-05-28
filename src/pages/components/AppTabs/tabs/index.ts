@@ -13,19 +13,19 @@ PathKeys.forEach((pathKey: string) => {
 		React.lazy(() => import(`./${pathKey}.tsx`))
 	);
 });
-console.log(TabMap);
 export const TabMapKeys = Array.from(TabMap.keys());
 export const TabMapValues = Array.from(TabMap.values());
-console.log(TabMap);
-
 export const unrenderedTabs = {
 	home: true,
 	cart: true,
+	login: true,
 };
 export const unrenderedTitles = {
 	home: true,
+	login: true,
 };
 export const unrenderedBuyButtons = {
 	home: true,
 	cart: true,
+	login: true,
 };

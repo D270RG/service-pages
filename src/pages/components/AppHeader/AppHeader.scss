@@ -1,6 +1,7 @@
 @import '../../index.scss';
 .appHeaderContainer {
-	position: relative;
+	position: sticky;
+	top: 0px;
 	z-index: 9999;
 	backdrop-filter: blur(4px);
 	display: flex;
@@ -15,7 +16,7 @@
 	top: 0;
 	display: flex;
 	flex-direction: row;
-	height: 46px;
+	height: 50px;
 	align-items: center;
 	overflow: hidden;
 }

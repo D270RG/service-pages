@@ -45,7 +45,7 @@ function AppTabsContent(props: { translations: ITranslations }) {
 								<React.Suspense fallback={<Loading pageSuspense={true} />}>
 									{!unrenderedTitles.hasOwnProperty(pathKey) && (
 										<div>
-											<h2 className='my-3 title'>{props.translations.tabs[pathKey].title}</h2>
+											<h2 className='title mt-3 mb-2'>{props.translations.tabs[pathKey].title}</h2>
 										</div>
 									)}
 									<ComponentValue

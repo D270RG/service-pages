@@ -22,7 +22,7 @@ function AppHeader(props: {
 			<div className='px-2 btns-container'>
 				{props.dropdownItems.length > 0 && (
 					<Dropdown>
-						<Dropdown.Toggle className='btn btn-light'>
+						<Dropdown.Toggle variant='light'>
 							<i className='bi bi-list'></i>
 						</Dropdown.Toggle>
 						<Dropdown.Menu variant='dark'>{props.dropdownItems}</Dropdown.Menu>
@@ -31,8 +31,17 @@ function AppHeader(props: {
 				<Link
 					to='/cart'
 					className='ps-1'>
-					<Button className='btn btn-dark'>
+					<Button
+						variant='dark'
+						className='login-button'>
 						<i className='bi bi-basket3-fill'></i>
+					</Button>
+				</Link>
+				<Link
+					to='/login'
+					className='ps-1'>
+					<Button variant='outline-dark'>
+						<i className='bi bi-person-fill'></i>
 					</Button>
 				</Link>
 			</div>

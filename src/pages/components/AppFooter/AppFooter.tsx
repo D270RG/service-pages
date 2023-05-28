@@ -18,7 +18,7 @@ function AppFooter(props: { tabLinks: string[] }) {
 	}, [pathname]);
 
 	return (
-		<div className='footer-container py-3 mt-5 padded-page'>
+		<div className='footer-container py-3 mt-3 padded-page'>
 			<div className='main-section'>
 				<div className='contacts'>
 					<span>{contactInfo.contacts.phone}</span>

@@ -1,4 +1,7 @@
 @import './index.scss';
+
+$basePadding: 7.4;
+
 a:link {
 	text-decoration: none;
 	color: unset !important;
@@ -30,19 +33,33 @@ h6 {
 	padding: 0px !important;
 	margin: 0px !important;
 }
+
 .padded-page {
 	@media screen and (min-width: map-get($grid-breakpoints,md)) {
-		padding-left: $spacer * 8;
-		padding-right: $spacer * 8;
+		padding-left: $spacer * $basePadding;
+		padding-right: $spacer * $basePadding;
 	}
 	padding-left: $spacer;
 	padding-right: $spacer;
 }
 .padded-half {
 	@media screen and (min-width: map-get($grid-breakpoints,md)) {
-		padding-left: $spacer * 4;
-		padding-right: $spacer * 4;
+		padding-left: $spacer * $basePadding/2;
+		padding-right: $spacer * $basePadding/2;
 	}
 	padding-left: $spacer;
 	padding-right: $spacer;
+}
+.main {
+	width: 100vw;
+	height: 100vh;
+}
+.title {
+	user-select: none;
+	cursor: pointer;
+}
+.inlineText {
+	padding-top: 1.5em;
+	padding-bottom: 1.5em;
+	max-width: 800px;
 }
