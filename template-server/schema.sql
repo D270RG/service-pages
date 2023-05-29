@@ -49,7 +49,10 @@ CREATE TABLE Users (
 --     component varchar(32) NOT NULL,
 --     path: varchar(32) NOT NULL
 -- );
-
+CREATE TABLE Sessions {
+    login varchar(254) NOT NULL,
+    sessionId varchar(32) NOT NULL
+}
 INSERT INTO ServiceDescriptions(id,language,name,description) VALUES ('example1','ru-RU','Example1','Диагностика'),('example2','ru-RU','Example1','Ремонт');
 -- INSERT INTO TabTitles(path,language,title) VALUES ('home','ru-RU','Домой'),('first-help','ru-RU','Первая помощь'),('laptop-repair','ru-RU','Ремонт ноутбука'),('phone-repair','ru-RU','Ремонт телефона'),('cart','ru-RU','Корзина');
 -- INSERT INTO TabsPageTexts(path,language,id,pageText) VALUES ('cart','ru-RU','isEmpty','Корзина пуста');
