@@ -190,7 +190,7 @@ app.post(
   async (req, res) => {
     let newSession = await db.addSession(req.body.login);
     if (newSession.affected) {
-      res.status(200).json({ login: req.body.login, sessionId: session.id });
+      res.status(200).json({ login: req.body.login, sessionId: newSession.id });
     } else {
       res.status(503).json({ rejected: "login", stage: "db", reason: "db" });
     }
