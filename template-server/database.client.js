@@ -206,7 +206,7 @@ async function checkUserPassword(login, password) {
   }
   return validatePassword(password, rows[0].password, rows[0].salt);
 }
-async function checkUserGroupid(login, group) {
+async function checkUserGroupId(login, group) {
   const rows = await Connector.read(
     `SELECT (groupid) FROM Users WHERE login=${login}`
   );
@@ -236,8 +236,16 @@ async function addSession(login) {
   };
 }
 async function checkSession(login, session) {
-  const rows = await Connector.set(
+  const rows = await Connector.read(
     `SELECT * FROM Sessions WHERE login=${login} AND sessionId=${session}`
+  );
+  return {
+    rows: Helper.emptyOrRows(rows),
+  };
+}
+async function getSession(session) {
+  const rows = await Connector.read(
+    `SELECT login FROM Sessions WHERE sessionId=${session}`
   );
   return {
     rows: Helper.emptyOrRows(rows),
@@ -246,6 +254,7 @@ async function checkSession(login, session) {
 
 module.exports = {
   // getPaths,
+  getSession,
   addSession,
   checkSession,
   getPrices,
@@ -257,7 +266,7 @@ module.exports = {
   addUser,
   deleteUser,
   checkUserPassword,
-  checkUserGroupid,
+  checkUserGroupId,
   validateLogin,
   validatePassword,
   validatePasswordInput,

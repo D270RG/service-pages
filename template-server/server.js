@@ -29,8 +29,8 @@ const authMiddleware = {
     let userExistance = await db.checkUserExistance(req.body.login);
     if (userExistance) {
       res.status(503).json({
-        rejected: "username",
-        stage: "check",
+        rejected: "auth",
+        stage: "session",
         reason: "userExists",
       });
       return;
@@ -41,11 +41,28 @@ const authMiddleware = {
     let userExistance = await db.checkUserExistance(req.body.login);
     if (!userExistance) {
       res.status(503).json({
-        rejected: "username",
-        stage: "check",
+        rejected: "auth",
+        stage: "session",
         reason: "userNotExists",
       });
       return;
+    }
+    next();
+  },
+  sessionNotExists: async function (req, res, next) {
+    if (req.session) {
+      let sessionCheck = await db.checkSession(
+        req.body.login,
+        req.body.session
+      );
+      if (!sessionCheck) {
+        res.status(503).json({
+          rejected: "auth",
+          stage: "session",
+          reason: "sessionNotExists",
+        });
+        return;
+      }
     }
     next();
   },
@@ -56,7 +73,9 @@ const authMiddleware = {
         req.body.session
       );
       if (sessionCheck) {
-        res.status(200).json({ sessionId: req.body.session });
+        res
+          .status(200)
+          .json({ login: req.body.login, sessionId: req.body.session });
         return;
       }
     }
@@ -67,7 +86,20 @@ const authMiddleware = {
     if (!passwordCheck) {
       res
         .status(503)
-        .json({ rejected: "password", stage: "check", reason: "incorrect" });
+        .json({ rejected: "auth", stage: "password", reason: "incorrect" });
+      return;
+    }
+    next();
+  },
+};
+const accessMiddleware = {
+  // Must be used in pair with authMiddleware.sessionNotExists to ensure admin user is logged in
+  mustBeAdmin: async function (req, res, next) {
+    let userGroup = await db.checkUserGroupId(req.body.login, "admin");
+    if (!userGroup) {
+      res
+        .status(503)
+        .json({ rejected: "access", stage: "groupId", reason: "notAdmin" });
       return;
     }
     next();
@@ -158,34 +190,50 @@ app.post(
   async (req, res) => {
     let newSession = await db.addSession(req.body.login);
     if (newSession.affected) {
-      res.status(200).json({ sessionId: session.id });
+      res.status(200).json({ login: req.body.login, sessionId: session.id });
     } else {
       res.status(503).json({ rejected: "login", stage: "db", reason: "db" });
     }
   }
 );
 
-app.post("/addFlyer", express.json(), async (req, res) => {
-  const flyer = req.body.flyer;
-  let insertionResult = await addFlyer(flyer);
-  if (insertionResult.affected) {
-    res.status(200);
-  } else {
-    res.status(503).json({ rejected: "addFlyer", stage: "db", reason: "db" });
+app.post(
+  "/addFlyer",
+  [
+    express.json(),
+    authMiddleware.sessionNotExists,
+    accessMiddleware.mustBeAdmin,
+  ],
+  async (req, res) => {
+    const flyer = req.body.flyer;
+    let insertionResult = await addFlyer(flyer);
+    if (insertionResult.affected) {
+      res.status(200);
+    } else {
+      res.status(503).json({ rejected: "addFlyer", stage: "db", reason: "db" });
+    }
   }
-});
-app.post("/deleteFlyer", express.json(), async (req, res) => {
-  const id = req.body.id;
-  let deletionResult = await db.deleteFlyer(id);
+);
+app.post(
+  "/deleteFlyer",
+  [
+    express.json(),
+    authMiddleware.sessionNotExists,
+    accessMiddleware.mustBeAdmin,
+  ],
+  async (req, res) => {
+    const id = req.body.id;
+    let deletionResult = await db.deleteFlyer(id);
 
-  if (deletionResult.affected) {
-    res.status(200);
-  } else {
-    res
-      .status(503)
-      .json({ rejected: "deleteFlyer", stage: "db", reason: "db" });
+    if (deletionResult.affected) {
+      res.status(200);
+    } else {
+      res
+        .status(503)
+        .json({ rejected: "deleteFlyer", stage: "db", reason: "db" });
+    }
   }
-});
+);
 
 //READ
 app.post("/flyers", express.json(), async (req, res) => {
