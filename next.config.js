@@ -1,23 +1,17 @@
 /** @type {import('next').NextConfig} */
 const path = require('path');
+const sass = require('sass');
 
 module.exports = {
-	async rewrites() {
-		return [
-			// Rewrite everything else to use `pages/index`
-			{
-				source: '/:path*',
-				destination: '/',
-			},
-		];
-	},
 	pageExtensions: ['tsx'],
 	trailingSlash: true,
 	images: {
 		unoptimized: true,
 	},
+	output: 'export',
+	distDir: '/server/build',
 	webpack(config) {
-		// Disable abomination called css modules
+		// Disable css modules
 		config.module.rules.forEach((rule) => {
 			const { oneOf } = rule;
 			if (oneOf) {

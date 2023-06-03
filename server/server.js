@@ -252,6 +252,8 @@ app.post('/translations', express.json(), (req, res) => {
 		res.status(404);
 	}
 });
+//PAGES
+app.use(express.static('./build'));
 let server = app.listen(PORT, function () {
 	console.log(`Server is running on ${PORT}`);
 });
