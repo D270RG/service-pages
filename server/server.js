@@ -147,15 +147,20 @@ app.post(
 		res.status(200);
 	}
 );
-app.post('/deleteUser', [express.json(), authMiddleware.userNotExists], async (req, res) => {
-	const login = req.body.login;
-	let userDeletion = await db.deleteUser(login);
-	if (!userDeletion) {
-		res.status(503).json({ rejected: 'deleteUser', stage: 'db', reason: 'db' });
-		return;
-	}
-	res.status(200);
-});
+// app.post(
+// 	'/deleteUser',
+// 	[express.json(), , accessMiddleware.mustBeAdmin, authMiddleware.userNotExists],
+// 	async (req, res) => {
+// 		const login = req.body.login;
+//     const userLogin = req.body.userLogin;
+// 		let userDeletion = await db.deleteUser(login);
+// 		if (!userDeletion) {
+// 			res.status(503).json({ rejected: 'deleteUser', stage: 'db', reason: 'db' });
+// 			return;
+// 		}
+// 		res.status(200);
+// 	}
+// );
 app.post(
 	'/login',
 	[
