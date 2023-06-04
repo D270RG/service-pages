@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Tab } from 'react-bootstrap';
 import { Navigate, Route, Routes } from 'react-router';
-import { TabMap, TabMapKeys, TabMapValues, unrenderedBuyButtons, unrenderedTitles } from './tabs';
+import { mapTabObjects, unrenderedBuyButtons, unrenderedTitles } from '../../../TabHelper';
 import './AppTabs.scss';
 import {
 	ICurrencyTranslations,
@@ -10,15 +10,15 @@ import {
 	ITranslations,
 } from 'p@/common-types/common-types';
 import PriceTable from 'pages/elements/priceTable/PriceTable';
-import { HttpClient } from 'HttpClient';
 import Loading from 'pages/elements/loading/Loading';
-import NotFound from 'pages/elements/NotFound/NotFound';
 import { useSelector } from 'react-redux';
 import { selectPrices } from 'pages/store/selectors';
+import { TabContext } from 'pages/store/AppWithStore';
 
 function AppTabsContent(props: { translations: ITranslations }) {
 	const [tabs, setTabs] = useState<JSX.Element[]>([]);
 	const prices = useSelector(selectPrices);
+	const tabMap = useContext(TabContext);
 
 	useEffect(() => {
 		renderTabs();
@@ -26,7 +26,7 @@ function AppTabsContent(props: { translations: ITranslations }) {
 
 	function renderTabs() {
 		const tabs: JSX.Element[] = [];
-		TabMap.forEach(
+		tabMap.forEach(
 			(
 				ComponentValue: React.LazyExoticComponent<
 					React.FunctionComponent<{
@@ -85,11 +85,7 @@ function AppTabsContent(props: { translations: ITranslations }) {
 			/>
 		);
 		setTabs(tabs);
-		console.log('LOC', location.pathname.split('/')[1], TabMapKeys);
 	}
-	useEffect(() => {
-		console.log('LOC', location.pathname.split('/')[1], TabMapKeys);
-	}, [location.pathname]);
 	return (
 		<Tab.Container
 			defaultActiveKey={'/'}

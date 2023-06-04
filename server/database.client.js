@@ -50,17 +50,20 @@ function combineSelector(paths) {
 	});
 	return selector.replace('-', '\\-');
 }
-// TODO:
-// async function getPaths() {
-// 	const rows = await Connector.read('SELECT * FROM Paths');
-// 	return Helper.emptyOrRows(rows);
-// }
-// async function addPath() {
+
+async function getPaths(groupId) {
+	const rows = await Connector.read(
+		`SELECT Paths.component,Paths.path FROM Paths 
+	 	 JOIN AccessList 
+		 ON AccessList.path = Paths.path 
+		 WHERE AccessList.groupid='${groupId}'`
+	);
+	return Helper.emptyOrRows(rows);
+}
+// async function addPath(path,component,groupId) {
 
 // }
-// async function deletePath() {
-
-// }
+// async function deletePath() {}
 
 async function getPrices(paths, language) {
 	let selector = combineSelector(paths);
@@ -198,29 +201,43 @@ async function checkUserGroupId(login, group) {
 }
 async function checkUserExistance(login) {
 	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login=${login}`);
-	if (rows.length > 0) {
-		return true;
-	}
-	return false;
+	return Helper.emptyOrRows(rows).length > 0;
 }
 async function addSession(login) {
 	const uuid = crypto.randomBytes(32).toString('hex');
-	const affected = await Connector.set(
+	const confirmationUuid = crypto.randomBytes(32).toString('hex');
+	const affectedSessions = await Connector.set(
 		`INSERT INTO Sessions(login,sessionId) VALUES (${login},${uuid})`
 	);
+	const affectedExpiration = await Connector.set(
+		`INSERT INTO SessionExpiration(sessionId,created) VALUES (${uuid},${UNIX_TIMESTAMP()})`
+	);
 	return {
-		affected: Helper.checkAffected(affected),
+		affected: Helper.checkAffected(affectedSessions) & Helper.checkAffected(affectedExpiration),
 		id: uuid,
+		confirmationId: confirmationUuid,
 	};
+}
+async function confirmSession(confirmationId) {
+	const rows = await Connector.read(
+		`SELECT * FROM SessionExpiration WHERE sessionId='${confirmationId}'`
+	);
+	if (Helper.emptyOrRows(rows).length > 0) {
+		const sessionActiveAffected = await Connector.set(
+			`DELETE FROM SessionExpiration WHERE sessionId=${confirmationId}`
+		);
+		return Helper.emptyOrRows(sessionActiveAffected).length > 0;
+	} else {
+		return false;
+	}
 }
 async function checkSession(login, session) {
 	const rows = await Connector.read(
 		`SELECT * FROM Sessions WHERE login=${login} AND sessionId=${session}`
 	);
-	return {
-		rows: Helper.emptyOrRows(rows),
-	};
+	return Helper.emptyOrRows(rows).length > 0;
 }
+
 async function getSession(session) {
 	const rows = await Connector.read(`SELECT login FROM Sessions WHERE sessionId=${session}`);
 	return {
@@ -228,8 +245,17 @@ async function getSession(session) {
 	};
 }
 
+async function getGroupId(login) {
+	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login=${login}`);
+	return {
+		rows: Helper.emptyOrRows(rows),
+	};
+}
 module.exports = {
-	// getPaths,
+	getPaths,
+	getGroupId,
+	checkSession,
+	confirmSession,
 	getSession,
 	addSession,
 	checkSession,

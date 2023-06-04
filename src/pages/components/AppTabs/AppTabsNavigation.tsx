@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Dropdown, Nav, Tab } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
-import { TabMap, unrenderedTabs } from './tabs/index';
+import { unrenderedTabs } from '../../../TabHelper';
 import './AppTabs.scss';
 
 import { ITabTranslations } from 'p@/common-types/common-types';
 import { InView } from 'react-intersection-observer';
+import { TabContext } from 'pages/store/AppWithStore';
 
 function AppTabsNavigation(props: {
 	tabTranslations: ITabTranslations;
@@ -16,9 +17,11 @@ function AppTabsNavigation(props: {
 	const hiddenNavs: string[] = [];
 	const location = useLocation();
 
+	const tabMap = useContext(TabContext);
+
 	useEffect(() => {
 		const navs: JSX.Element[] = [];
-		TabMap.forEach((ComponentValue, pathKey) => {
+		tabMap.forEach((ComponentValue, pathKey) => {
 			if (!unrenderedTabs.hasOwnProperty(pathKey))
 				navs.push(
 					<InView

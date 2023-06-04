@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { ICartItem, IPriceList, ITranslations } from 'p@/common-types/common-types';
+import { ICartItem, IPriceList, ITabList, ITranslations } from 'p@/common-types/common-types';
 
 //----------------------------------payload interfaces
 interface LocaleActionPayload {
@@ -28,9 +28,15 @@ interface PricesActionPayload {
 	error?: Error;
 }
 
+interface TabsActionPayload {
+	tabs?: ITabList;
+	error?: Error;
+}
+
 interface FormActionPayload {
 	visible: boolean;
 }
+
 //----------------------------------states
 interface IFormInitialState {
 	visible: boolean;
@@ -39,7 +45,10 @@ interface IPricesInitialState {
 	prices: IPriceList | undefined;
 	error?: Error;
 }
-
+interface ITabsInitialState {
+	tabs: ITabList | undefined;
+	error?: Error;
+}
 export const pricesInitialState: IPricesInitialState = {
 	prices: undefined,
 	error: undefined,
@@ -47,6 +56,11 @@ export const pricesInitialState: IPricesInitialState = {
 export const formInitialState: IFormInitialState = {
 	visible: false,
 };
+export const tabsInitialState: ITabsInitialState = {
+	tabs: {},
+	error: undefined,
+};
+
 export const cartAdapter = createEntityAdapter<ICartItem>({
 	// Assume IDs are stored in a field other than `item.id`
 	selectId: (item) => item.id,
@@ -107,6 +121,18 @@ export const formSlice = createSlice({
 		setVisibility(state, action: PayloadAction<FormActionPayload>) {
 			state.visible = action.payload.visible;
 			console.log(state.visible);
+		},
+	},
+});
+export const tabsSlice = createSlice({
+	name: 'tabs',
+	initialState: tabsInitialState,
+	reducers: {
+		getTabsSuccess(state, action: PayloadAction<TabsActionPayload>) {
+			state.tabs = action.payload.tabs;
+		},
+		getTabsError(state, action: PayloadAction<TabsActionPayload>) {
+			state.error = action.payload.error;
 		},
 	},
 });

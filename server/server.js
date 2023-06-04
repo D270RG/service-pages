@@ -2,8 +2,9 @@ const PORT = 4000;
 
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const db = require('./database.client');
-const fc = require('./file.connector');
+const nodemailer = require('nodemailer');
 const app = express();
 
 const corsOptions = {
@@ -13,17 +14,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(express.static('./build'));
 
-// TODO:
-// app.get('/paths', (req, res) => {
-// 	db.getPaths().then((pathRows) => {
-// 		let resObject = {};
-// 		pathRows.forEach((pathRow) => {
-// 			resObject[pathRow.component] = pathRow.path;
-// 		});
-// 		res.status(200), json(JSON.stringify(resObject));
-// 	});
-// });
 const authMiddleware = {
 	userAlreadyExists: async function (req, res, next) {
 		let userExistance = await db.checkUserExistance(req.body.login);
@@ -140,10 +132,7 @@ app.post(
 		validationMiddleware.passwordValidations,
 	],
 	async (req, res) => {
-		let userRegistration = await db.addUser(req.body.login, req.body.password);
-		if (!userRegistration) {
-			res.status(503).json({ rejected: 'addUser', stage: 'db', reason: 'db' });
-		}
+		nodemailer.sendConfirmationEmail(req.body.login, user.confirmationCode);
 		res.status(200);
 	}
 );
@@ -161,6 +150,25 @@ app.post(
 // 		res.status(200);
 // 	}
 // );
+app.get('/confirmation/:id', async (req, res) => {
+	const confirmationId = req.params.id;
+	let confirmation = await db.confirmSession(confirmationId);
+	if (!confirmation) {
+		res
+			.status(503)
+			.json({ rejected: 'sessionConfirmation', stage: 'session', reason: 'notExists' });
+	}
+	let userRegistration = await db.addUser(req.body.login, req.body.password);
+	if (!userRegistration) {
+		res.status(503).json({ rejected: 'addUser', stage: 'db', reason: 'db' });
+	}
+	let newSession = await db.addSession(req.body.login);
+	if (newSession.affected) {
+		res.status(200).json({ login: req.body.login, sessionId: newSession.id });
+	} else {
+		res.status(503).json({ rejected: 'login', stage: 'db', reason: 'db' });
+	}
+});
 app.post(
 	'/login',
 	[
@@ -208,10 +216,24 @@ app.post(
 );
 
 //READ
+app.get('/paths', [express.json(), sessionCheckMiddleware.sessionExists], async (req, res) => {
+	let userGroupId = 'user';
+	if (req.locals.session) {
+		userGroupId = await db.getUserGroupId(req.body.login);
+	}
+	let pathRows = await db.getPaths(userGroupId);
+	let resObject = {};
+	pathRows.forEach((pathRow) => {
+		resObject[pathRow.component] = pathRow.path;
+	});
+	res.status(200).json(JSON.stringify(resObject));
+});
 app.post('/flyers', express.json(), async (req, res) => {
+	console.log('app post flyers');
 	const language = req.body.language;
 	console.log('received lang', language);
 	let flyerRows = await db.getFlyers(language);
+	console.log('flyer rows', flyerRows);
 	res.status(200).json(JSON.stringify(flyerRows.rows));
 });
 app.post('/prices', express.json(), async (req, res) => {
@@ -242,18 +264,19 @@ app.post('/serviceDescriptions', express.json(), (req, res) => {
 		res.status(404);
 	}
 });
-app.post('/translations', express.json(), (req, res) => {
-	let locale = req.body.locale;
-	const translations = require('./translations.json');
-	console.log('translations req', req.body);
-	if (translations.hasOwnProperty(locale)) {
-		res.status(200).json(JSON.stringify(translations[locale]));
-	} else {
-		res.status(404);
-	}
-});
-//PAGES
-app.use(express.static('./build'));
+// app.post('/translations', express.json(), (req, res) => {
+// 	let locale = req.body.locale;
+// 	const translations = require('./translations.json');
+// 	console.log('translations req', req.body);
+// 	if (translations.hasOwnProperty(locale)) {
+// 		res.status(200).json(JSON.stringify(translations[locale]));
+// 	} else {
+// 		res.status(404);
+// 	}
+// });
+//REWRITES
+app.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html')));
+//SERVER
 let server = app.listen(PORT, function () {
 	console.log(`Server is running on ${PORT}`);
 });

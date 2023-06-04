@@ -1,27 +1,41 @@
 import * as Components from 'pages/components/index';
-import { ITranslations } from 'p@/common-types/common-types';
-import { TabMapKeys, unrenderedBuyButtons } from 'pages/components/AppTabs/tabs';
+import { ITabList, ITranslations } from 'p@/common-types/common-types';
+import { mapTabObjects, unrenderedBuyButtons } from 'TabHelper';
 import Loading from 'pages/elements/loading/Loading';
 import Logo from 'pages/elements/smallLogo/Logo';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, LazyExoticComponent, FunctionComponent } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { getPrices } from './effects';
+import { getPrices, getTabs } from './effects';
 import store from './store';
 import translations from 'p@/descriptions/translations.json';
 import ModalForm from 'pages/elements/form/ModalForm';
-import { selectFormVisibility } from './selectors';
+import { selectFormVisibility, selectTabs } from './selectors';
 import { useSelector } from 'react-redux';
+import { CookieClient } from 'CookieClient';
+
+export const TabContext = createContext(
+	new Map<string, LazyExoticComponent<FunctionComponent<{}>>>()
+);
+
 export default function AppWithStore() {
+	const cookieClient = new CookieClient();
 	const [dropdownItems, setDropdownItems] = useState<JSX.Element[]>([]);
 	const formVisibility = useSelector(selectFormVisibility);
+	const tabs = useSelector(selectTabs) || {};
+	const tabMap = mapTabObjects(tabs);
+	const tabMapKeys = Array.from(tabMap.keys());
+	useEffect(() => {
+		const login = cookieClient.readCookies['login'];
+		store.dispatch(getTabs(login));
+	}, []);
 	useEffect(() => {
 		store.dispatch(
 			getPrices({
-				paths: TabMapKeys.filter((TabMapKey) => !unrenderedBuyButtons.hasOwnProperty(TabMapKey)),
+				paths: tabMapKeys.filter((tabMapKey) => !unrenderedBuyButtons.hasOwnProperty(tabMapKey)),
 				language: navigator.language,
 			})
 		);
-	}, []);
+	}, [tabs]);
 	return (
 		<BrowserRouter>
 			{translations && (
@@ -42,9 +56,11 @@ export default function AppWithStore() {
 			{translations ? (
 				<div>
 					<div className='padded-page'>
-						<Components.AppTabsOutlet translations={translations[navigator.language]} />
+						<TabContext.Provider value={tabMap}>
+							<Components.AppTabsOutlet translations={translations[navigator.language]} />
+						</TabContext.Provider>
 					</div>
-					<Components.AppFooter tabLinks={TabMapKeys} />
+					<Components.AppFooter tabLinks={tabMapKeys} />
 					{formVisibility && (
 						<ModalForm formTranslations={translations[navigator.language].loginForm} />
 					)}

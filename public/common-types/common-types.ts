@@ -76,6 +76,10 @@ export interface ITranslations {
 	loginForm: ILoginFormTranslations;
 }
 
+export interface ITabList {
+	[component: string]: string;
+}
+
 export interface IFlyer {
 	id: string;
 	href: string;
