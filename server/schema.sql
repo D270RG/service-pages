@@ -26,8 +26,9 @@ CREATE TABLE Users (
     login varchar(254) NOT NULL,
     password varchar(132) NOT NULL,
     salt varchar(16) NOT NULL,
-    groupid varchar(16) NOT NULL --admin, user
-)
+    groupid varchar(16) NOT NULL, 
+    active int
+);
 CREATE TABLE Paths (
     component varchar(32) NOT NULL,
     path varchar(32) NOT NULL
@@ -41,12 +42,14 @@ CREATE TABLE Sessions (
     sessionId varchar(32) NOT NULL
 );
 CREATE TABLE SessionExpiration (
-    sessionId varchar(32) NOT NULL,
+    login varchar(32) NOT NULL,
     confirmationId varchar(32) NOT NULL,
     created Int NOT NULL
 );
 
 SET GLOBAL event_scheduler = ON;
+DROP EVENT clearSessions;
+
 DELIMITER $$
 CREATE EVENT IF NOT EXISTS `service`.`clearSessions`
 ON SCHEDULE
@@ -55,9 +58,8 @@ COMMENT 'Clear unconfirmed sessions'
 DO
     BEGIN
     
-        DELETE FROM Sessions WHERE sessionId IN (
-            SELECT sessionId FROM SessionExpiration WHERE created<(UNIX_TIMESTAMP() - 86400)
-        );
+        DELETE FROM SessionExpiration WHERE created<(UNIX_TIMESTAMP() - 86400);
+        DELETE FROM Users WHERE active=0;
 
     END $$
 DELIMITER ;

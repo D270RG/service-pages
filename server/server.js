@@ -132,7 +132,12 @@ app.post(
 		validationMiddleware.passwordValidations,
 	],
 	async (req, res) => {
-		nodemailer.sendConfirmationEmail(req.body.login, user.confirmationCode);
+		let userRegistration = await db.addUser(req.body.login, req.body.password);
+		if (!userRegistration) {
+			res.status(503).json({ rejected: 'addUser', stage: 'db', reason: 'db' });
+		}
+		let newExpirationSession = await db.addExpiration(req.body.login);
+		nodemailer.sendConfirmationEmail(req.body.login, newExpirationSession.confirmationId);
 		res.status(200);
 	}
 );
@@ -158,16 +163,15 @@ app.get('/confirmation/:id', async (req, res) => {
 			.status(503)
 			.json({ rejected: 'sessionConfirmation', stage: 'session', reason: 'notExists' });
 	}
-	let userRegistration = await db.addUser(req.body.login, req.body.password);
-	if (!userRegistration) {
-		res.status(503).json({ rejected: 'addUser', stage: 'db', reason: 'db' });
+	let activateUser = await db.activateUser(confirmationId);
+	if (!activateUser.affected) {
+		res.status(503).json({ rejected: 'sessionConfirmation', stage: 'activation', reason: 'db' });
 	}
 	let newSession = await db.addSession(req.body.login);
-	if (newSession.affected) {
-		res.status(200).json({ login: req.body.login, sessionId: newSession.id });
-	} else {
+	if (!newSession.affected) {
 		res.status(503).json({ rejected: 'login', stage: 'db', reason: 'db' });
 	}
+	res.status(200).json({ login: req.body.login, sessionId: newSession.id });
 });
 app.post(
 	'/login',

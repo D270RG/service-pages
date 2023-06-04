@@ -84,3 +84,8 @@ export interface IFlyer {
 	id: string;
 	href: string;
 }
+
+export interface ILoginInfo {
+	login: string;
+	sessionId: string;
+}

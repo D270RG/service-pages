@@ -91,14 +91,27 @@ async function addUser(login, password, groupid) {
 			login,
 			password,
 			salt,
-			groupid) 
+			groupid,
+			active) 
 	     VALUES 
 			(${login},
 			${saltedHash.hash},
 			${saltedHash.salt},
-			${groupid})`
+			${groupid},
+			${0})`
 	);
 	return { affected: Helper.checkAffected(affected) };
+}
+async function activateUser(expirationUuid) {
+	const login = await Connector.read(
+		`SELECT login FROM SessionExpiration WHERE confirmationId=${expirationUuid}`
+	);
+	const affectedUsers = await Connector.set(
+		`UPDATE Users 
+		 SET active=1
+		 WHERE login=${login}`
+	);
+	return { affected: Helper.checkAffected(affectedUsers) };
 }
 async function addPrice(priceObject) {
 	const uuid = crypto.randomBytes(32).toString('hex');
@@ -203,19 +216,25 @@ async function checkUserExistance(login) {
 	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login=${login}`);
 	return Helper.emptyOrRows(rows).length > 0;
 }
-async function addSession(login) {
+async function addExpiration(login) {
 	const uuid = crypto.randomBytes(32).toString('hex');
 	const confirmationUuid = crypto.randomBytes(32).toString('hex');
+	const affectedExpiration = await Connector.set(
+		`INSERT INTO SessionExpiration(login,confirmationId,created) VALUES (${login},${uuid},${UNIX_TIMESTAMP()})`
+	);
+	return {
+		affected: Helper.checkAffected(affectedExpiration),
+		confirmationId: confirmationUuid,
+	};
+}
+async function addSession(login) {
+	const uuid = crypto.randomBytes(32).toString('hex');
 	const affectedSessions = await Connector.set(
 		`INSERT INTO Sessions(login,sessionId) VALUES (${login},${uuid})`
 	);
-	const affectedExpiration = await Connector.set(
-		`INSERT INTO SessionExpiration(sessionId,created) VALUES (${uuid},${UNIX_TIMESTAMP()})`
-	);
 	return {
-		affected: Helper.checkAffected(affectedSessions) & Helper.checkAffected(affectedExpiration),
+		affected: Helper.checkAffected(affectedSessions),
 		id: uuid,
-		confirmationId: confirmationUuid,
 	};
 }
 async function confirmSession(confirmationId) {
@@ -252,6 +271,8 @@ async function getGroupId(login) {
 	};
 }
 module.exports = {
+	activateUser,
+	addExpiration,
 	getPaths,
 	getGroupId,
 	checkSession,

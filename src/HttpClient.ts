@@ -1,10 +1,55 @@
-import { IFlyer, IPriceList, ITabList, ITranslations } from 'p@/common-types/common-types';
+import {
+	IFlyer,
+	ILoginInfo,
+	IPriceList,
+	ITabList,
+	ITranslations,
+} from 'p@/common-types/common-types';
 
 const serverAddress = '127.0.0.1:4000';
 //TODO: add common HttpService
 export class AuthHttpClient {
-	public login(login: string, password: string) {}
-	public register() {}
+	public login(login: string, password: string) {
+		let p = new Promise<ILoginInfo>((resolve, reject) => {
+			fetch(`http://${serverAddress}/login`, {
+				method: 'POST',
+				body: JSON.stringify({ login, password }),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+				.then((response: Response) => response.json())
+				.then((jsonData: string) => JSON.parse(jsonData))
+				.then((data: ILoginInfo) => resolve(data))
+				.catch((err) => {
+					reject(err);
+					console.log(err.message);
+				});
+		});
+		return p;
+	}
+	public register(login: string, password: string) {
+		let p = new Promise<void>((resolve, reject) => {
+			fetch(`http://${serverAddress}/addUser`, {
+				method: 'POST',
+				body: JSON.stringify({ login, password }),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+				.then((response: Response) => {
+					if (response.ok) {
+						resolve();
+					}
+					reject();
+				})
+				.catch((err) => {
+					reject(err);
+					console.log(err.message);
+				});
+		});
+		return p;
+	}
 }
 export class HttpClient {
 	public getPaths(login: string | undefined): Promise<ITabList> {
