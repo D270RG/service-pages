@@ -8,14 +8,14 @@ import { Col, Row } from 'react-bootstrap';
 import {
 	ICurrencyTranslations,
 	IFlyer,
-	IGeneralTranslations,
 	ITabTranslation,
+	ITranslationEntry,
 } from 'p@/common-types/common-types';
 import { HttpClient } from 'HttpClient';
 
 function Home(props: {
 	tabTranslate: ITabTranslation;
-	generalTranslate: IGeneralTranslations;
+	generalTranslate: ITranslationEntry;
 	currencyTranslate: ICurrencyTranslations;
 }) {
 	const [flyers, setFlyers] = useState<IFlyer[]>([]);

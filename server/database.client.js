@@ -111,7 +111,7 @@ async function activateUser(expirationUuid) {
 		 SET active=1
 		 WHERE login=${login}`
 	);
-	return { affected: Helper.checkAffected(affectedUsers) };
+	return { login, affected: Helper.checkAffected(affectedUsers) };
 }
 async function addPrice(priceObject) {
 	const uuid = crypto.randomBytes(32).toString('hex');

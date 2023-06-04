@@ -47,33 +47,26 @@ export interface IFlyerPayload {
 	language: string;
 }
 
-export interface IGeneralTranslations {
-	[key: string]: string;
-}
 export interface ICurrencyTranslations {
 	[Currency.rub]: string;
 	[Currency.usd]: string;
 }
 export interface ITabTranslation {
 	title: string;
-	titles: {
-		[titleKey: string]: string;
-	};
-	texts: {
-		[textKey: string]: string;
-	};
+	titles: ITranslationEntry;
+	texts: ITranslationEntry;
 }
 export interface ITabTranslations {
-	[tabKey: string]: ITabTranslation;
+	[key: string]: ITabTranslation;
 }
-export interface ILoginFormTranslations {
+export interface ITranslationEntry {
 	[key: string]: string;
 }
 export interface ITranslations {
-	general: IGeneralTranslations;
+	general: ITranslationEntry;
 	currencies: ICurrencyTranslations;
 	tabs: ITabTranslations;
-	loginForm: ILoginFormTranslations;
+	loginForm: ITranslationEntry;
 }
 
 export interface ITabList {
@@ -85,7 +78,6 @@ export interface IFlyer {
 	href: string;
 }
 
-export interface ILoginInfo {
-	login: string;
-	sessionId: string;
+export interface IError {
+	error: string;
 }

@@ -1,16 +1,10 @@
-import {
-	IFlyer,
-	ILoginInfo,
-	IPriceList,
-	ITabList,
-	ITranslations,
-} from 'p@/common-types/common-types';
+import { IError, IFlyer, IPriceList, ITabList } from 'p@/common-types/common-types';
 
 const serverAddress = '127.0.0.1:4000';
 //TODO: add common HttpService
 export class AuthHttpClient {
 	public login(login: string, password: string) {
-		let p = new Promise<ILoginInfo>((resolve, reject) => {
+		let p = new Promise<void | IError>((resolve, reject) => {
 			fetch(`http://${serverAddress}/login`, {
 				method: 'POST',
 				body: JSON.stringify({ login, password }),
@@ -18,18 +12,23 @@ export class AuthHttpClient {
 					'Content-Type': 'application/json',
 				},
 			})
-				.then((response: Response) => response.json())
+				.then((response: Response) => {
+					if (response.ok) {
+						resolve();
+					} else {
+						return response.json();
+					}
+				})
 				.then((jsonData: string) => JSON.parse(jsonData))
-				.then((data: ILoginInfo) => resolve(data))
+				.then((err: IError) => reject(err))
 				.catch((err) => {
 					reject(err);
-					console.log(err.message);
 				});
 		});
 		return p;
 	}
 	public register(login: string, password: string) {
-		let p = new Promise<void>((resolve, reject) => {
+		let p = new Promise<void | IError>((resolve, reject) => {
 			fetch(`http://${serverAddress}/addUser`, {
 				method: 'POST',
 				body: JSON.stringify({ login, password }),
@@ -40,12 +39,14 @@ export class AuthHttpClient {
 				.then((response: Response) => {
 					if (response.ok) {
 						resolve();
+					} else {
+						return response.json();
 					}
-					reject();
 				})
+				.then((jsonData: string) => JSON.parse(jsonData))
+				.then((err: IError) => reject(err))
 				.catch((err) => {
 					reject(err);
-					console.log(err.message);
 				});
 		});
 		return p;

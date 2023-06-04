@@ -21,9 +21,7 @@ const authMiddleware = {
 		let userExistance = await db.checkUserExistance(req.body.login);
 		if (userExistance) {
 			res.status(503).json({
-				rejected: 'auth',
-				stage: 'session',
-				reason: 'userExists',
+				error: 'userAlreadyExists',
 			});
 			return;
 		}
@@ -32,11 +30,7 @@ const authMiddleware = {
 	userNotExists: async function (req, res, next) {
 		let userExistance = await db.checkUserExistance(req.body.login);
 		if (!userExistance) {
-			res.status(503).json({
-				rejected: 'auth',
-				stage: 'session',
-				reason: 'userNotExists',
-			});
+			res.status(503).json({ error: 'userNotExists' });
 			return;
 		}
 		next();
@@ -45,11 +39,7 @@ const authMiddleware = {
 		if (req.session) {
 			let sessionCheck = await db.checkSession(req.body.login, req.body.session);
 			if (!sessionCheck) {
-				res.status(503).json({
-					rejected: 'auth',
-					stage: 'session',
-					reason: 'sessionNotExists',
-				});
+				res.status(503).json({ error: 'sessionNotExists' });
 				return;
 			}
 		}
@@ -59,7 +49,9 @@ const authMiddleware = {
 		if (req.session) {
 			let sessionCheck = await db.checkSession(req.body.login, req.body.session);
 			if (sessionCheck) {
-				res.status(200).json({ login: req.body.login, sessionId: req.body.session });
+				res.cookie('login', req.body.login);
+				res.cookie('sessionId', req.body.session);
+				res.status(200);
 				return;
 			}
 		}
@@ -68,7 +60,7 @@ const authMiddleware = {
 	password: async function (req, res, next) {
 		let passwordCheck = await db.checkUserPassword(req.body.password);
 		if (!passwordCheck) {
-			res.status(503).json({ rejected: 'auth', stage: 'password', reason: 'incorrect' });
+			res.status(503).json({ error: 'incorrectPassword' });
 			return;
 		}
 		next();
@@ -79,7 +71,7 @@ const accessMiddleware = {
 	mustBeAdmin: async function (req, res, next) {
 		let userGroup = await db.checkUserGroupId(req.body.login, 'admin');
 		if (!userGroup) {
-			res.status(503).json({ rejected: 'access', stage: 'groupId', reason: 'notAdmin' });
+			res.status(503).json({ error: 'notPermitted' });
 			return;
 		}
 		next();
@@ -102,11 +94,7 @@ const validationMiddleware = {
 	loginValidations: async function (req, res, next) {
 		let loginValidation = await db.validateLogin(req.body.login);
 		if (!loginValidation.valid) {
-			res.status(503).json({
-				rejected: 'username',
-				stage: 'validation',
-				reason: loginValidation.reason,
-			});
+			res.status(503).json({ error: 'incorrectLogin' });
 			return;
 		}
 		next();
@@ -115,7 +103,7 @@ const validationMiddleware = {
 		let passwordValidations = await db.validatePasswordInput(req.body.password);
 		for (let [key, value] in Object.entries(passwordValidations)) {
 			if (!value) {
-				res.status(503).json({ rejected: 'password', stage: 'validation', reason: key });
+				res.status(503).json({ error: 'incorrectPassword' });
 				return;
 			}
 		}
@@ -134,7 +122,7 @@ app.post(
 	async (req, res) => {
 		let userRegistration = await db.addUser(req.body.login, req.body.password);
 		if (!userRegistration) {
-			res.status(503).json({ rejected: 'addUser', stage: 'db', reason: 'db' });
+			res.status(503).json({ error: 'databaseError' });
 		}
 		let newExpirationSession = await db.addExpiration(req.body.login);
 		nodemailer.sendConfirmationEmail(req.body.login, newExpirationSession.confirmationId);
@@ -159,19 +147,19 @@ app.get('/confirmation/:id', async (req, res) => {
 	const confirmationId = req.params.id;
 	let confirmation = await db.confirmSession(confirmationId);
 	if (!confirmation) {
-		res
-			.status(503)
-			.json({ rejected: 'sessionConfirmation', stage: 'session', reason: 'notExists' });
+		res.status(503).json({ error: 'confirmationExpired' });
 	}
 	let activateUser = await db.activateUser(confirmationId);
 	if (!activateUser.affected) {
-		res.status(503).json({ rejected: 'sessionConfirmation', stage: 'activation', reason: 'db' });
+		res.status(503).json({ error: 'activationError' });
 	}
 	let newSession = await db.addSession(req.body.login);
 	if (!newSession.affected) {
-		res.status(503).json({ rejected: 'login', stage: 'db', reason: 'db' });
+		res.status(503).json({ error: 'databaseError' });
 	}
-	res.status(200).json({ login: req.body.login, sessionId: newSession.id });
+	res.cookie('login', activateUser.login);
+	res.cookie('sessionId', newSession.id);
+	res.status(200);
 });
 app.post(
 	'/login',
@@ -184,9 +172,11 @@ app.post(
 	async (req, res) => {
 		let newSession = await db.addSession(req.body.login);
 		if (newSession.affected) {
-			res.status(200).json({ login: req.body.login, sessionId: newSession.id });
+			res.cookie('login', activateUser.login);
+			res.cookie('sessionId', newSession.id);
+			res.status(200);
 		} else {
-			res.status(503).json({ rejected: 'login', stage: 'db', reason: 'db' });
+			res.status(503).json({ error: 'databaseError' });
 		}
 	}
 );
@@ -200,7 +190,7 @@ app.post(
 		if (insertionResult.affected) {
 			res.status(200);
 		} else {
-			res.status(503).json({ rejected: 'addFlyer', stage: 'db', reason: 'db' });
+			res.status(503).json({ error: 'databaseError' });
 		}
 	}
 );
@@ -214,7 +204,7 @@ app.post(
 		if (deletionResult.affected) {
 			res.status(200);
 		} else {
-			res.status(503).json({ rejected: 'deleteFlyer', stage: 'db', reason: 'db' });
+			res.status(503).json({ error: 'databaseError' });
 		}
 	}
 );

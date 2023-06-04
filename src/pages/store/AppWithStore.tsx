@@ -62,7 +62,10 @@ export default function AppWithStore() {
 					</div>
 					<Components.AppFooter tabLinks={tabMapKeys} />
 					{formVisibility && (
-						<ModalForm formTranslations={translations[navigator.language].loginForm} />
+						<ModalForm
+							formTranslations={translations[navigator.language].loginForm}
+							errorTranslations={translations[navigator.language].errors}
+						/>
 					)}
 				</div>
 			) : (

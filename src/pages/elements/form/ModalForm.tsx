@@ -4,7 +4,8 @@ import Form from 'react-bootstrap/Form';
 import { Button, InputGroup } from 'react-bootstrap';
 import store from 'pages/store/store';
 import { formSlice } from 'pages/store/reducers';
-import { ILoginFormTranslations } from 'p@/common-types/common-types';
+import { IError, ITranslationEntry } from 'p@/common-types/common-types';
+import { AuthHttpClient } from 'HttpClient';
 interface IField {
 	value: string;
 	valid: boolean | undefined;
@@ -15,7 +16,11 @@ interface ICheck {
 	valid: boolean;
 	message?: string;
 }
-function ModalForm(props: { formTranslations: ILoginFormTranslations }) {
+function ModalForm(props: {
+	formTranslations: ITranslationEntry;
+	errorTranslations: ITranslationEntry;
+}) {
+	const authClient = new AuthHttpClient();
 	const [formMode, setFormMode] = useState<'login' | 'register'>('login');
 	const [formStateLogin, setFormStateLogin] = useState<IField>({ value: '', valid: undefined });
 	const [formStatePassword, setFormStatePassword] = useState<IField>({
@@ -26,12 +31,23 @@ function ModalForm(props: { formTranslations: ILoginFormTranslations }) {
 		value: '',
 		valid: undefined,
 	});
+	const [error, setError] = useState<string | undefined>(undefined);
+
 	function onSubmit() {
 		console.log('on submit');
+		setError(undefined);
 		let emptyCheck = checkRequiredFields();
 		if (formMode === 'login') {
 			if (emptyCheck && formStateLogin.valid && formStatePassword.valid) {
-				console.log('send');
+				const clientLogin = authClient.login(formStateLogin.value, formStatePassword.value);
+				clientLogin.then(
+					() => {
+						console.log('client register success');
+					},
+					(Error: IError) => {
+						setError(props.errorTranslations[Error.error]);
+					}
+				);
 			}
 		} else {
 			if (
@@ -40,11 +56,22 @@ function ModalForm(props: { formTranslations: ILoginFormTranslations }) {
 				formStatePassword.valid &&
 				formStatePasswordRepeat.valid
 			) {
-				console.log('send');
+				const clientRegister = authClient
+					.register(formStateLogin.value, formStatePassword.value)
+					.then();
+				clientRegister.then(
+					() => {
+						console.log('client register success');
+					},
+					(Error: IError) => {
+						setError(props.errorTranslations[Error.error]);
+					}
+				);
 			}
 		}
 	}
 	function onCancel() {
+		setError(undefined);
 		store.dispatch(formSlice.actions.setVisibility({ visible: false }));
 	}
 	function checkRequiredFields(): boolean {
@@ -141,6 +168,12 @@ function ModalForm(props: { formTranslations: ILoginFormTranslations }) {
 						<Form.Label className='mb-3'>
 							<h5>{props.formTranslations.loginTitle}</h5>
 						</Form.Label>
+						{error && (
+							<ErrorToast
+								message={error}
+								className='mb-2'
+							/>
+						)}
 						<Form.Group className='mb-2'>
 							<Form.Label>{props.formTranslations.email}</Form.Label>
 							<Form.Control
@@ -235,6 +268,12 @@ function ModalForm(props: { formTranslations: ILoginFormTranslations }) {
 						<Form.Label className='mb-3'>
 							<h5>{props.formTranslations.registerTitle}</h5>
 						</Form.Label>
+						{error && (
+							<ErrorToast
+								message={error}
+								className='mb-2'
+							/>
+						)}
 						<Form.Group className='mb-2'>
 							<Form.Label>{props.formTranslations.email}</Form.Label>
 							<Form.Control

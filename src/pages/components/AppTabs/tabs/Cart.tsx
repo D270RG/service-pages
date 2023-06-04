@@ -2,12 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import store from 'pages/store/store';
 import { cartSlice } from 'pages/store/reducers';
 import { cartSelectors } from 'pages/store/selectors';
-import {
-	ICartItem,
-	ICurrencyTranslations,
-	IGeneralTranslations,
-	ITabTranslation,
-} from 'p@/common-types/common-types';
+import { ICartItem, ICurrencyTranslations, ITabTranslation } from 'p@/common-types/common-types';
 import { Button } from 'react-bootstrap';
 import { HttpClient } from 'HttpClient';
 import Loading from 'pages/elements/loading/Loading';
@@ -15,7 +10,7 @@ import TypeContainer from 'pages/elements/typeContainer/TypeContainer';
 
 function Cart(props: {
 	tabTranslate: ITabTranslation;
-	generalTranslate: IGeneralTranslations;
+	generalTranslate: ITranslationEntry;
 	currencyTranslate: ICurrencyTranslations;
 }) {
 	const [cartItems, setCartItems] = useState<ICartItem[]>([]);

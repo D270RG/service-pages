@@ -27,6 +27,18 @@
 			"invalidPasswordRepeat": "Пароли не совпадают!",
 			"required": "Обязательное поле"
 		},
+		"errors": {
+			"userAlreadyExists": "Такой логин уже зарегистрирован",
+			"userNotExists": "Пользователь не существует",
+			"sessionNotExists": "Время сессии истекло",
+			"wrongPassword": "Неверный пароль",
+			"incorrectPassword": "Ошибка при верификации пароля",
+			"incorrectLogin": "Ошибка при верификации логина",
+			"notPermitted": "Нет доступа",
+			"confirmationExpired": "Код подтверждения истек",
+			"activationError": "Ошибка активации",
+			"databaseError": "Произошла ошибка"
+		},
 		"tabs": {
 			"home": {
 				"title": "Домой",
