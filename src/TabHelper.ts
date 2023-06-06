@@ -1,7 +1,5 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
-import './tabs.scss';
 import { ITabList } from 'p@/common-types/common-types';
+import React from 'react';
 
 export function mapTabObjects(
 	tabObject: ITabList
@@ -11,7 +9,7 @@ export function mapTabObjects(
 		console.log('importing', tabKey);
 		TabMap.set(
 			tabObject[tabKey],
-			React.lazy(() => import(`./${tabKey}.tsx`))
+			React.lazy(() => import(`../src/pages/components/AppTabs/tabs/${tabKey}.tsx`))
 		);
 	});
 	return TabMap;

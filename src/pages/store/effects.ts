@@ -21,17 +21,20 @@ export const getPrices = createAsyncThunk<void, { paths: string[]; language: str
 		);
 	}
 );
-export const getTabs = createAsyncThunk<void, { login: string }>('tabs/get', async ({ login }) => {
-	const httpClient = new HttpClient();
-	console.log('sending tabs request');
-	const response = await httpClient.getPaths(login).catch((error: Error) => {
-		store.dispatch(tabsSlice.actions.getTabsError({ error }));
-		return;
-	});
-	console.log('tabs response', response);
-	store.dispatch(
-		tabsSlice.actions.getTabsSuccess({
-			tabs: response as ITabList,
-		})
-	);
-});
+export const getTabs = createAsyncThunk<void, { login: string | undefined }>(
+	'tabs/get',
+	async ({ login }) => {
+		const httpClient = new HttpClient();
+		console.log('sending tabs request', login);
+		const response = await httpClient.getPaths(login).catch((error: Error) => {
+			store.dispatch(tabsSlice.actions.getTabsError({ error }));
+			return;
+		});
+		console.log('tabs response', response);
+		store.dispatch(
+			tabsSlice.actions.getTabsSuccess({
+				tabs: response as ITabList,
+			})
+		);
+	}
+);

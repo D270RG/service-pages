@@ -3,16 +3,12 @@ import React, { useEffect, useState } from 'react';
 import './PriceTable.scss';
 import { Button } from 'react-bootstrap';
 import store from 'pages/store/store';
-import {
-	ICurrencyTranslations,
-	IGeneralTranslations,
-	IPriceList,
-} from 'p@/common-types/common-types';
+import { ICurrencyTranslations, IPriceList, ITranslationEntry } from 'p@/common-types/common-types';
 import { cartSelectors } from 'pages/store/selectors';
 
 function PriceTable(props: {
 	currencyTranslations: ICurrencyTranslations;
-	generalTranslations: IGeneralTranslations;
+	generalTranslations: ITranslationEntry;
 	priceInfo: IPriceList;
 	path: string;
 }) {

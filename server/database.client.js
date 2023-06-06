@@ -94,10 +94,10 @@ async function addUser(login, password, groupid) {
 			groupid,
 			active) 
 	     VALUES 
-			(${login},
-			${saltedHash.hash},
-			${saltedHash.salt},
-			${groupid},
+			('${login}',
+			'${saltedHash.hash}',
+			'${saltedHash.salt}',
+			'${groupid}',
 			${0})`
 	);
 	return { affected: Helper.checkAffected(affected) };
@@ -109,7 +109,7 @@ async function activateUser(expirationUuid) {
 	const affectedUsers = await Connector.set(
 		`UPDATE Users 
 		 SET active=1
-		 WHERE login=${login}`
+		 WHERE login='${login}'`
 	);
 	return { login, affected: Helper.checkAffected(affectedUsers) };
 }
@@ -124,11 +124,11 @@ async function addPrice(priceObject) {
 			amount,
 			) 
 	     VALUES 
-			(${uuid},
-			${priceObject.type},
-			${priceObject.price},
-			${priceObject.currency},
-			${priceObject.amount})`
+			('${uuid}',
+			'${priceObject.type}',
+			'${priceObject.price}',
+			'${priceObject.currency}',
+			'${priceObject.amount}')`
 	);
 	const affectedDescriptions = await Connector.set(
 		`INSERT INTO ServiceDescriptions(
@@ -138,10 +138,10 @@ async function addPrice(priceObject) {
 			description,
 			) 
 	     VALUES 
-			(${uuid},
-			${priceObject.language},
-			${priceObject.name},
-			${priceObject.description})`
+			('${uuid}',
+			'${priceObject.language}',
+			'${priceObject.name}',
+			'${priceObject.description}')`
 	);
 	return {
 		affected: Helper.checkAffected(affectedDescriptions) & Helper.checkAffected(affectedPrices),
@@ -164,10 +164,10 @@ async function addFlyer(flyerObject) {
 			title,
 			text) 
 	     VALUES 
-			(${uuid},
-			${flyerObject.language},
-			${flyerObject.title},
-			${flyerObject.text})`
+			('${uuid}',
+			'${flyerObject.language}',
+			'${flyerObject.title}',
+			'${flyerObject.text}')`
 	);
 	return {
 		affected: Helper.checkAffected(affectedFlyers) & Helper.checkAffected(affectedDescriptions),
@@ -176,28 +176,32 @@ async function addFlyer(flyerObject) {
 }
 
 async function deleteUser(login) {
-	const affected = await Connector.set(`DELETE FROM Users WHERE login=${login}`);
+	const affected = await Connector.set(`DELETE FROM Users WHERE login='${login}'`);
 	return { affected: Helper.checkAffected(affected) };
 }
 async function deletePrice(id) {
-	const affectedPrices = await Connector.set(`DELETE FROM Prices WHERE id=${id}`);
+	const affectedPrices = await Connector.set(`DELETE FROM Prices WHERE id='${id}'`);
 	const affectedDescriptions = await Connector.set(
-		`DELETE FROM ServiceDescriptions WHERE id=${id}`
+		`DELETE FROM ServiceDescriptions WHERE id='${id}'`
 	);
 	return {
 		affected: Helper.checkAffected(affectedPrices) & Helper.checkAffected(affectedDescriptions),
 	};
 }
 async function deleteFlyer(id) {
-	const affectedFlyers = await Connector.set(`DELETE FROM Flyers WHERE id=${id}`);
-	const affectedDescriptions = await Connector.set(`DELETE FROM FlyerDescriptions WHERE id=${id}`);
+	const affectedFlyers = await Connector.set(`DELETE FROM Flyers WHERE id='${id}'`);
+	const affectedDescriptions = await Connector.set(
+		`DELETE FROM FlyerDescriptions WHERE id='${id}'`
+	);
 	return {
 		affected: Helper.checkAffected(affectedFlyers) & Helper.checkAffected(affectedDescriptions),
 	};
 }
 
 async function checkUserPassword(login, password) {
-	const rows = await Connector.read(`SELECT (login,password,salt) FROM Users WHERE login=${login}`);
+	const rows = await Connector.read(
+		`SELECT (login,password,salt) FROM Users WHERE login='${login}'`
+	);
 	if (rows.length > 1) {
 		console.log('Duplicate login detected!');
 		return false;
@@ -205,7 +209,7 @@ async function checkUserPassword(login, password) {
 	return validatePassword(password, rows[0].password, rows[0].salt);
 }
 async function checkUserGroupId(login, group) {
-	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login=${login}`);
+	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login='${login}'`);
 	if (rows.length > 1) {
 		console.log('Duplicate login detected!');
 		return false;
@@ -213,14 +217,14 @@ async function checkUserGroupId(login, group) {
 	return rows[0].groupid === group;
 }
 async function checkUserExistance(login) {
-	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login=${login}`);
+	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login='${login}'`);
 	return Helper.emptyOrRows(rows).length > 0;
 }
 async function addExpiration(login) {
 	const uuid = crypto.randomBytes(32).toString('hex');
 	const confirmationUuid = crypto.randomBytes(32).toString('hex');
 	const affectedExpiration = await Connector.set(
-		`INSERT INTO SessionExpiration(login,confirmationId,created) VALUES (${login},${uuid},${UNIX_TIMESTAMP()})`
+		`INSERT INTO SessionExpiration(login,confirmationId,created) VALUES ('${login}','${uuid}','${UNIX_TIMESTAMP()}')`
 	);
 	return {
 		affected: Helper.checkAffected(affectedExpiration),
@@ -230,7 +234,7 @@ async function addExpiration(login) {
 async function addSession(login) {
 	const uuid = crypto.randomBytes(32).toString('hex');
 	const affectedSessions = await Connector.set(
-		`INSERT INTO Sessions(login,sessionId) VALUES (${login},${uuid})`
+		`INSERT INTO Sessions(login,sessionId) VALUES ('${login}','${uuid}')`
 	);
 	return {
 		affected: Helper.checkAffected(affectedSessions),
@@ -243,7 +247,7 @@ async function confirmSession(confirmationId) {
 	);
 	if (Helper.emptyOrRows(rows).length > 0) {
 		const sessionActiveAffected = await Connector.set(
-			`DELETE FROM SessionExpiration WHERE sessionId=${confirmationId}`
+			`DELETE FROM SessionExpiration WHERE sessionId='${confirmationId}'`
 		);
 		return Helper.emptyOrRows(sessionActiveAffected).length > 0;
 	} else {
@@ -252,20 +256,26 @@ async function confirmSession(confirmationId) {
 }
 async function checkSession(login, session) {
 	const rows = await Connector.read(
-		`SELECT * FROM Sessions WHERE login=${login} AND sessionId=${session}`
+		`SELECT * FROM Sessions WHERE login='${login}' AND sessionId='${session}'`
 	);
 	return Helper.emptyOrRows(rows).length > 0;
 }
 
 async function getSession(session) {
-	const rows = await Connector.read(`SELECT login FROM Sessions WHERE sessionId=${session}`);
+	const rows = await Connector.read(`SELECT login FROM Sessions WHERE sessionId='${session}'`);
 	return {
 		rows: Helper.emptyOrRows(rows),
 	};
 }
 
 async function getGroupId(login) {
-	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login=${login}`);
+	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login='${login}'`);
+	console.log('group id', rows);
+	if (!rows) {
+		return {
+			rows: 'User',
+		};
+	}
 	return {
 		rows: Helper.emptyOrRows(rows),
 	};

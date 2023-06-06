@@ -60,7 +60,7 @@ const authMiddleware = {
 	password: async function (req, res, next) {
 		let passwordCheck = await db.checkUserPassword(req.body.password);
 		if (!passwordCheck) {
-			res.status(503).json({ error: 'incorrectPassword' });
+			res.status(503).json({ error: 'wrongPassword' });
 			return;
 		}
 		next();
@@ -82,11 +82,11 @@ const sessionCheckMiddleware = {
 		if (req.body.session) {
 			let sessionCheck = await db.checkSession(req.body.login, req.body.session);
 			if (sessionCheck) {
-				req.locals.sessionExists = true;
+				res.locals.sessionExists = true;
 				next();
 			}
 		}
-		req.locals.session = false;
+		res.locals.session = false;
 		next();
 	},
 };
@@ -210,9 +210,9 @@ app.post(
 );
 
 //READ
-app.get('/paths', [express.json(), sessionCheckMiddleware.sessionExists], async (req, res) => {
+app.post('/paths', [express.json(), sessionCheckMiddleware.sessionExists], async (req, res) => {
 	let userGroupId = 'user';
-	if (req.locals.session) {
+	if (res.locals.session) {
 		userGroupId = await db.getUserGroupId(req.body.login);
 	}
 	let pathRows = await db.getPaths(userGroupId);
@@ -220,6 +220,7 @@ app.get('/paths', [express.json(), sessionCheckMiddleware.sessionExists], async 
 	pathRows.forEach((pathRow) => {
 		resObject[pathRow.component] = pathRow.path;
 	});
+	console.log('sending', resObject, 'pathRow', pathRows);
 	res.status(200).json(JSON.stringify(resObject));
 });
 app.post('/flyers', express.json(), async (req, res) => {
@@ -231,7 +232,6 @@ app.post('/flyers', express.json(), async (req, res) => {
 	res.status(200).json(JSON.stringify(flyerRows.rows));
 });
 app.post('/prices', express.json(), async (req, res) => {
-	console.log('getting prices', req.body);
 	let priceRows = await db.getPrices(req.body.paths, req.body.language);
 
 	let resObject = {};

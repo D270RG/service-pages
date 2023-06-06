@@ -5,8 +5,8 @@ import { mapTabObjects, unrenderedBuyButtons, unrenderedTitles } from '../../../
 import './AppTabs.scss';
 import {
 	ICurrencyTranslations,
-	IGeneralTranslations,
 	ITabTranslation,
+	ITranslationEntry,
 	ITranslations,
 } from 'p@/common-types/common-types';
 import PriceTable from 'pages/elements/priceTable/PriceTable';
@@ -21,58 +21,63 @@ function AppTabsContent(props: { translations: ITranslations }) {
 	const tabMap = useContext(TabContext);
 
 	useEffect(() => {
-		renderTabs();
-	}, [prices]);
+		if (tabMap && prices) renderTabs();
+	}, [tabMap, prices]);
 
 	function renderTabs() {
 		const tabs: JSX.Element[] = [];
-		tabMap.forEach(
-			(
-				ComponentValue: React.LazyExoticComponent<
-					React.FunctionComponent<{
-						tabTranslate: ITabTranslation;
-						generalTranslate: IGeneralTranslations;
-						currencyTranslate: ICurrencyTranslations;
-					}>
-				>,
-				pathKey
-			) => {
-				tabs.push(
-					<Route
-						path={`${pathKey}`}
-						element={
-							props.translations && (
-								<React.Suspense fallback={<Loading pageSuspense={true} />}>
-									{!unrenderedTitles.hasOwnProperty(pathKey) && (
-										<div>
-											<h2 className='title mt-3 mb-2'>{props.translations.tabs[pathKey].title}</h2>
-										</div>
-									)}
-									<ComponentValue
-										tabTranslate={props.translations.tabs[pathKey]}
-										generalTranslate={props.translations.general}
-										currencyTranslate={props.translations.currencies}
-									/>
-									{prices
-										? prices.hasOwnProperty(pathKey) && (
-												<PriceTable
-													priceInfo={prices}
-													path={pathKey}
-													generalTranslations={props.translations.general}
-													currencyTranslations={props.translations.currencies}
-												/>
-										  )
-										: !unrenderedBuyButtons.hasOwnProperty(pathKey) && (
-												<div className='text-muted mt-3'>
-													{props.translations.general.noPriceData}
-												</div>
-										  )}
-								</React.Suspense>
-							)
-						}></Route>
-				);
-			}
-		);
+		console.log('RENDERING TABS', tabMap);
+		if (tabMap)
+			tabMap.forEach(
+				(
+					ComponentValue: React.LazyExoticComponent<
+						React.FunctionComponent<{
+							tabTranslate: ITabTranslation;
+							generalTranslate: ITranslationEntry;
+							currencyTranslate: ICurrencyTranslations;
+						}>
+					>,
+					pathKey
+				) => {
+					console.log('tab map', tabMap);
+					tabs.push(
+						<Route
+							path={`${pathKey}`}
+							element={
+								props.translations && (
+									<React.Suspense fallback={<Loading pageSuspense={true} />}>
+										{!unrenderedTitles.hasOwnProperty(pathKey) && (
+											<div>
+												<h2 className='title mt-3 mb-2'>
+													{props.translations.tabs[pathKey].title}
+												</h2>
+											</div>
+										)}
+										<ComponentValue
+											tabTranslate={props.translations.tabs[pathKey]}
+											generalTranslate={props.translations.general}
+											currencyTranslate={props.translations.currencies}
+										/>
+										{prices
+											? prices.hasOwnProperty(pathKey) && (
+													<PriceTable
+														priceInfo={prices}
+														path={pathKey}
+														generalTranslations={props.translations.general}
+														currencyTranslations={props.translations.currencies}
+													/>
+											  )
+											: !unrenderedBuyButtons.hasOwnProperty(pathKey) && (
+													<div className='text-muted mt-3'>
+														{props.translations.general.noPriceData}
+													</div>
+											  )}
+									</React.Suspense>
+								)
+							}></Route>
+					);
+				}
+			);
 		tabs.push(
 			<Route
 				path='*'

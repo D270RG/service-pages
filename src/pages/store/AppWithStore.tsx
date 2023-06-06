@@ -13,9 +13,9 @@ import { selectFormVisibility, selectTabs } from './selectors';
 import { useSelector } from 'react-redux';
 import { CookieClient } from 'CookieClient';
 
-export const TabContext = createContext(
-	new Map<string, LazyExoticComponent<FunctionComponent<{}>>>()
-);
+export const TabContext = createContext<
+	Map<string, LazyExoticComponent<FunctionComponent>> | undefined
+>(undefined);
 
 export default function AppWithStore() {
 	const cookieClient = new CookieClient();
@@ -26,15 +26,19 @@ export default function AppWithStore() {
 	const tabMapKeys = Array.from(tabMap.keys());
 	useEffect(() => {
 		const login = cookieClient.readCookies['login'];
-		store.dispatch(getTabs(login));
+		console.log('dispatching with', login);
+		store.dispatch(getTabs({ login }));
 	}, []);
 	useEffect(() => {
-		store.dispatch(
-			getPrices({
-				paths: tabMapKeys.filter((tabMapKey) => !unrenderedBuyButtons.hasOwnProperty(tabMapKey)),
-				language: navigator.language,
-			})
-		);
+		console.log('received tabs', tabs);
+		if (Object.keys(tabs).length > 0) {
+			store.dispatch(
+				getPrices({
+					paths: tabMapKeys.filter((tabMapKey) => !unrenderedBuyButtons.hasOwnProperty(tabMapKey)),
+					language: navigator.language,
+				})
+			);
+		}
 	}, [tabs]);
 	return (
 		<BrowserRouter>
@@ -48,6 +52,7 @@ export default function AppWithStore() {
 								console.log('set dropdownItems');
 								setDropdownItems(items);
 							}}
+							tabMap={tabMap}
 							tabTranslations={translations[navigator.language].tabs}
 						/>
 					}

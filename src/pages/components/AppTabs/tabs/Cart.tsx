@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import store from 'pages/store/store';
 import { cartSlice } from 'pages/store/reducers';
 import { cartSelectors } from 'pages/store/selectors';
-import { ICartItem, ICurrencyTranslations, ITabTranslation } from 'p@/common-types/common-types';
+import { ICartItem, ICurrencyTranslations, ITabTranslation, ITranslationEntry } from 'p@/common-types/common-types';
 import { Button } from 'react-bootstrap';
 import { HttpClient } from 'HttpClient';
 import Loading from 'pages/elements/loading/Loading';

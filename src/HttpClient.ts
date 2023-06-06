@@ -54,6 +54,7 @@ export class AuthHttpClient {
 }
 export class HttpClient {
 	public getPaths(login: string | undefined): Promise<ITabList> {
+		console.log('get paths by login', login);
 		let p = new Promise<ITabList>((resolve, reject) => {
 			fetch(`http://${serverAddress}/paths`, {
 				method: 'POST',
@@ -64,7 +65,10 @@ export class HttpClient {
 			})
 				.then((response: Response) => response.json())
 				.then((jsonData: string) => JSON.parse(jsonData))
-				.then((data: ITabList) => resolve(data))
+				.then((data: ITabList) => {
+					console.log('tabs', data);
+					return resolve(data);
+				})
 				.catch((err) => {
 					reject(err);
 					console.log(err.message);
