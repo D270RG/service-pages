@@ -41,11 +41,14 @@ function ModalForm(props: {
 		if (formMode === 'login') {
 			if (emptyCheck && formStateLogin.valid && formStatePassword.valid) {
 				const clientLogin = authClient.login(formStateLogin.value, formStatePassword.value);
+				console.log('logging', formStateLogin.value, formStatePassword.value);
 				clientLogin.then(
 					() => {
 						console.log('client register success');
+						onCancel();
 					},
 					(Error: IError) => {
+						console.log('error', Error);
 						setError(props.errorTranslations[Error.error]);
 					}
 				);
@@ -62,9 +65,11 @@ function ModalForm(props: {
 					.then();
 				clientRegister.then(
 					() => {
-						console.log('client register success');
+						console.log('client login success');
+						onCancel();
 					},
 					(Error: IError) => {
+						console.log('error', Error);
 						setError(props.errorTranslations[Error.error]);
 					}
 				);
@@ -208,6 +213,7 @@ function ModalForm(props: {
 									role='button'
 									onClick={() => {
 										setFormMode('register');
+										setError(undefined);
 										setFormStateLogin({ value: '', valid: undefined, finalCheck: false });
 										setFormStatePassword({ value: '', valid: undefined, finalCheck: false });
 										setFormStatePasswordRepeat({ value: '', valid: undefined, finalCheck: false });
@@ -307,6 +313,7 @@ function ModalForm(props: {
 									role='button'
 									onClick={() => {
 										setFormMode('login');
+										setError(undefined);
 										setFormStateLogin({ value: '', valid: undefined, finalCheck: false });
 										setFormStatePassword({ value: '', valid: undefined, finalCheck: false });
 										setFormStatePasswordRepeat({ value: '', valid: undefined, finalCheck: false });

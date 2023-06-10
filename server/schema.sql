@@ -41,28 +41,28 @@ CREATE TABLE Sessions (
     login varchar(254) NOT NULL,
     sessionId varchar(32) NOT NULL
 );
-CREATE TABLE SessionExpiration (
-    login varchar(32) NOT NULL,
-    confirmationId varchar(32) NOT NULL,
-    created Int NOT NULL
-);
+-- CREATE TABLE SessionExpiration (
+--     login varchar(32) NOT NULL,
+--     confirmationId varchar(32) NOT NULL,
+--     created Int NOT NULL
+-- );
 
-SET GLOBAL event_scheduler = ON;
-DROP EVENT clearSessions;
+-- SET GLOBAL event_scheduler = ON;
+-- DROP EVENT clearSessions;
 
-DELIMITER $$
-CREATE EVENT IF NOT EXISTS `service`.`clearSessions`
-ON SCHEDULE
-    EVERY 3 HOUR
-COMMENT 'Clear unconfirmed sessions'
-DO
-    BEGIN
+-- DELIMITER $$
+-- CREATE EVENT IF NOT EXISTS `service`.`clearSessions`
+-- ON SCHEDULE
+--     EVERY 3 HOUR
+-- COMMENT 'Clear unconfirmed sessions'
+-- DO
+--     BEGIN
     
-        DELETE FROM SessionExpiration WHERE created<(UNIX_TIMESTAMP() - 86400);
-        DELETE FROM Users WHERE active=0;
+--         DELETE FROM SessionExpiration WHERE created<(UNIX_TIMESTAMP() - 86400);
+--         DELETE FROM Users WHERE active=0;
 
-    END $$
-DELIMITER ;
+--     END $$
+-- DELIMITER ;
 
 
 INSERT INTO ServiceDescriptions(id,language,name,description) VALUES ('example1','ru-RU','Example1','Диагностика'),('example2','ru-RU','Example1','Ремонт');

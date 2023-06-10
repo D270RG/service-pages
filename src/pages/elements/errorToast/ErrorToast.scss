@@ -1,6 +1,9 @@
 .error-toast {
-	height: 200px;
+	min-height: 50px;
 	width: 100%;
 	color: white;
-	background-color: red;
+	background-color: rgb(246, 92, 92);
+	padding: 1em;
+	border-radius: 15px;
+	text-align: center;
 }

@@ -3,9 +3,8 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { ICartItem, IPriceList, ITabList, ITranslations } from 'p@/common-types/common-types';
 
 //----------------------------------payload interfaces
-interface LocaleActionPayload {
-	locale?: ITranslations;
-	error?: Error;
+interface LoggedInPayload {
+	login: string | undefined;
 }
 
 interface AddCartItemPayload {
@@ -38,6 +37,9 @@ interface FormActionPayload {
 }
 
 //----------------------------------states
+interface ILoggedInInitialState {
+	login: string | undefined;
+}
 interface IFormInitialState {
 	visible: boolean;
 }
@@ -49,6 +51,9 @@ interface ITabsInitialState {
 	tabs: ITabList | undefined;
 	error?: Error;
 }
+export const loggedInInitialState: ILoggedInInitialState = {
+	login: undefined,
+};
 export const pricesInitialState: IPricesInitialState = {
 	prices: undefined,
 	error: undefined,
@@ -68,6 +73,15 @@ export const cartAdapter = createEntityAdapter<ICartItem>({
 	sortComparer: (a, b) => a.type.localeCompare(b.type),
 });
 //----------------------------------reducer
+export const loggedInSlice = createSlice({
+	name: 'loggedIn',
+	initialState: loggedInInitialState,
+	reducers: {
+		setLoggedState(state, action: PayloadAction<LoggedInPayload>) {
+			state.login = action.payload.login;
+		},
+	},
+});
 export const cartSlice = createSlice({
 	name: 'cartItems',
 	initialState: cartAdapter.getInitialState(),

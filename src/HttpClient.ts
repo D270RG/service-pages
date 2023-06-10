@@ -1,5 +1,18 @@
 import { IError, IFlyer, IPriceList, ITabList } from 'p@/common-types/common-types';
+import { loggedInSlice } from 'pages/store/reducers';
+import store from 'pages/store/store';
 
+function checkLoggedState(response: Response): void {
+	console.log('check logged headers');
+	console.log(response.headers.get('Loggedin'));
+	if (response.headers.get('Loggedin') === 'true') {
+		store.dispatch(
+			loggedInSlice.actions.setLoggedState({ login: response.headers.get('Login') || undefined })
+		);
+	} else {
+		store.dispatch(loggedInSlice.actions.setLoggedState({ login: undefined }));
+	}
+}
 const serverAddress = '127.0.0.1:4000';
 //TODO: add common HttpService
 export class AuthHttpClient {
@@ -11,17 +24,42 @@ export class AuthHttpClient {
 				headers: {
 					'Content-Type': 'application/json',
 				},
+				credentials: 'include',
 			})
 				.then((response: Response) => {
+					checkLoggedState(response);
 					if (response.ok) {
 						resolve();
 					} else {
 						return response.json();
 					}
 				})
-				.then((jsonData: string) => JSON.parse(jsonData))
-				.then((err: IError) => reject(err))
-				.catch((err) => {
+				.then((jsonData: IError) => reject(jsonData))
+				.catch((err: Error) => {
+					reject(err);
+				});
+		});
+		return p;
+	}
+	public unlogin() {
+		let p = new Promise<void | IError>((resolve, reject) => {
+			fetch(`http://${serverAddress}/unlogin`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+			})
+				.then((response: Response) => {
+					checkLoggedState(response);
+					if (response.ok) {
+						resolve();
+					} else {
+						return response.json();
+					}
+				})
+				.then((jsonData: IError) => reject(jsonData))
+				.catch((err: Error) => {
 					reject(err);
 				});
 		});
@@ -35,17 +73,18 @@ export class AuthHttpClient {
 				headers: {
 					'Content-Type': 'application/json',
 				},
+				credentials: 'include',
 			})
 				.then((response: Response) => {
+					checkLoggedState(response);
 					if (response.ok) {
 						resolve();
 					} else {
 						return response.json();
 					}
 				})
-				.then((jsonData: string) => JSON.parse(jsonData))
-				.then((err: IError) => reject(err))
-				.catch((err) => {
+				.then((jsonData: IError) => reject(jsonData))
+				.catch((err: Error) => {
 					reject(err);
 				});
 		});
@@ -62,14 +101,19 @@ export class HttpClient {
 				headers: {
 					'Content-Type': 'application/json',
 				},
+				credentials: 'include',
 			})
-				.then((response: Response) => response.json())
+				.then((response: Response) => {
+					checkLoggedState(response);
+					console.log('paths response', response);
+					return response.json();
+				})
 				.then((jsonData: string) => JSON.parse(jsonData))
 				.then((data: ITabList) => {
 					console.log('tabs', data);
 					return resolve(data);
 				})
-				.catch((err) => {
+				.catch((err: Error) => {
 					reject(err);
 					console.log(err.message);
 				});
@@ -84,11 +128,15 @@ export class HttpClient {
 				headers: {
 					'Content-Type': 'application/json',
 				},
+				credentials: 'include',
 			})
-				.then((response: Response) => response.json())
+				.then((response: Response) => {
+					checkLoggedState(response);
+					return response.json();
+				})
 				.then((jsonData: string) => JSON.parse(jsonData))
 				.then((data: IPriceList) => resolve(data))
-				.catch((err) => {
+				.catch((err: Error) => {
 					reject(err);
 					console.log(err.message);
 				});
@@ -103,8 +151,10 @@ export class HttpClient {
 				headers: {
 					'Content-Type': 'application/json',
 				},
+				credentials: 'include',
 			})
 				.then((response: Response) => {
+					checkLoggedState(response);
 					return response.json();
 				})
 				.then((jsonData: string) => {
@@ -113,7 +163,7 @@ export class HttpClient {
 				.then((data: IFlyer[]) => {
 					resolve(data);
 				})
-				.catch((err) => {
+				.catch((err: Error) => {
 					reject(err);
 					console.log(err.message);
 				});

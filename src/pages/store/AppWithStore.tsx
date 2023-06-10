@@ -9,26 +9,24 @@ import { getPrices, getTabs } from './effects';
 import store from './store';
 import translations from 'p@/descriptions/translations.json';
 import ModalForm from 'pages/elements/form/ModalForm';
-import { selectFormVisibility, selectTabs } from './selectors';
+import { selectFormVisibility, selectLoggedState, selectTabs } from './selectors';
 import { useSelector } from 'react-redux';
-import { CookieClient } from 'CookieClient';
 
 export const TabContext = createContext<
 	Map<string, LazyExoticComponent<FunctionComponent>> | undefined
 >(undefined);
 
 export default function AppWithStore() {
-	const cookieClient = new CookieClient();
 	const [dropdownItems, setDropdownItems] = useState<JSX.Element[]>([]);
 	const formVisibility = useSelector(selectFormVisibility);
 	const tabs = useSelector(selectTabs) || {};
 	const tabMap = mapTabObjects(tabs);
 	const tabMapKeys = Array.from(tabMap.keys());
+	const login = useSelector(selectLoggedState);
+
 	useEffect(() => {
-		const login = cookieClient.readCookies['login'];
-		console.log('dispatching with', login);
-		store.dispatch(getTabs({ login }));
-	}, []);
+		store.dispatch(getTabs({ login: login }));
+	}, [login]);
 	useEffect(() => {
 		console.log('received tabs', tabs);
 		if (Object.keys(tabs).length > 0) {

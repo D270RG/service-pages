@@ -43,6 +43,7 @@ function AppTabsNavigation(props: {
 									}
 								} else {
 									//add to dropdown
+									console.log('pushing', entry.target.id);
 									hiddenNavs.push(entry.target.id);
 								}
 								console.log('tab translations', props.tabTranslations, hiddenNavs);
@@ -59,7 +60,7 @@ function AppTabsNavigation(props: {
 									})
 								);
 							}}>
-							<Nav.Item>
+							<Nav.Item className='mb-3'>
 								<Nav.Link
 									eventKey={pathKey}
 									as={Link}

@@ -1,10 +1,8 @@
 const Connector = require('./database.connector');
 const Helper = require('./database.helper');
-const validate = require('deep-email-validator');
-
 const crypto = require('crypto');
 
-function generateSalt() {
+function generateSalt(length) {
 	return crypto
 		.randomBytes(Math.ceil(length / 2))
 		.toString('hex')
@@ -26,14 +24,12 @@ function generatePassword(password) {
 }
 function validatePassword(password, salt, hash) {
 	let saltedPassword = sha512(password, salt);
+	console.log('salted password', saltedPassword);
 	return hash === saltedPassword.hash;
-}
-async function validateLogin(login) {
-	return await validate(login);
 }
 function validatePasswordInput(password) {
 	let passwordValidation = {};
-	passwordValidation[lengthCheck] = password.length > 6;
+	passwordValidation['lengthCheck'] = password.length > 6;
 	return passwordValidation;
 }
 function combineSelector(paths) {
@@ -70,7 +66,6 @@ async function getPrices(paths, language) {
 	const rows = await Connector.read(
 		`SELECT Prices.id,type,price,currency,amount,path,name,description FROM Prices JOIN ServiceDescriptions ON Prices.id=ServiceDescriptions.id AND ServiceDescriptions.language='${language}' WHERE path in (${selector}) `
 	);
-	console.log('returning rows', rows);
 	return { rows };
 }
 async function getFlyers(language) {
@@ -82,9 +77,6 @@ async function getFlyers(language) {
 }
 
 async function addUser(login, password, groupid) {
-	if (checkUserExistance(login)) {
-		return false;
-	}
 	let saltedHash = generatePassword(password);
 	const affected = await Connector.read(
 		`INSERT INTO Users(
@@ -102,17 +94,17 @@ async function addUser(login, password, groupid) {
 	);
 	return { affected: Helper.checkAffected(affected) };
 }
-async function activateUser(expirationUuid) {
-	const login = await Connector.read(
-		`SELECT login FROM SessionExpiration WHERE confirmationId=${expirationUuid}`
-	);
-	const affectedUsers = await Connector.set(
-		`UPDATE Users 
-		 SET active=1
-		 WHERE login='${login}'`
-	);
-	return { login, affected: Helper.checkAffected(affectedUsers) };
-}
+// async function activateUser(expirationUuid) {
+// 	const login = await Connector.read(
+// 		`SELECT login FROM SessionExpiration WHERE confirmationId=${expirationUuid}`
+// 	);
+// 	const affectedUsers = await Connector.set(
+// 		`UPDATE Users
+// 		 SET active=1
+// 		 WHERE login='${login}'`
+// 	);
+// 	return { login, affected: Helper.checkAffected(affectedUsers) };
+// }
 async function addPrice(priceObject) {
 	const uuid = crypto.randomBytes(32).toString('hex');
 	const affectedPrices = await Connector.set(
@@ -199,19 +191,18 @@ async function deleteFlyer(id) {
 }
 
 async function checkUserPassword(login, password) {
-	const rows = await Connector.read(
-		`SELECT (login,password,salt) FROM Users WHERE login='${login}'`
-	);
-	if (rows.length > 1) {
-		console.log('Duplicate login detected!');
+	const rows = await Connector.read(`SELECT * FROM Users WHERE login='${login}'`);
+	if (rows.length === 0) {
+		console.log('No login found');
 		return false;
 	}
-	return validatePassword(password, rows[0].password, rows[0].salt);
+	console.log('password rows', rows);
+	return validatePassword(password, rows[0].salt, rows[0].password);
 }
 async function checkUserGroupId(login, group) {
 	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login='${login}'`);
-	if (rows.length > 1) {
-		console.log('Duplicate login detected!');
+	if (rows.length === 1) {
+		console.log('No login found');
 		return false;
 	}
 	return rows[0].groupid === group;
@@ -220,19 +211,19 @@ async function checkUserExistance(login) {
 	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login='${login}'`);
 	return Helper.emptyOrRows(rows).length > 0;
 }
-async function addExpiration(login) {
-	const uuid = crypto.randomBytes(32).toString('hex');
-	const confirmationUuid = crypto.randomBytes(32).toString('hex');
-	const affectedExpiration = await Connector.set(
-		`INSERT INTO SessionExpiration(login,confirmationId,created) VALUES ('${login}','${uuid}','${UNIX_TIMESTAMP()}')`
-	);
-	return {
-		affected: Helper.checkAffected(affectedExpiration),
-		confirmationId: confirmationUuid,
-	};
-}
+// async function addExpiration(login) {
+// 	const uuid = crypto.randomBytes(16).toString('hex');
+// 	const confirmationUuid = crypto.randomBytes(16).toString('hex');
+// 	const affectedExpiration = await Connector.set(
+// 		`INSERT INTO SessionExpiration(login,confirmationId,created) VALUES ('${login}','${uuid}',UNIX_TIMESTAMP())`
+// 	);
+// 	return {
+// 		affected: Helper.checkAffected(affectedExpiration),
+// 		confirmationId: confirmationUuid,
+// 	};
+// }
 async function addSession(login) {
-	const uuid = crypto.randomBytes(32).toString('hex');
+	const uuid = crypto.randomBytes(16).toString('hex');
 	const affectedSessions = await Connector.set(
 		`INSERT INTO Sessions(login,sessionId) VALUES ('${login}','${uuid}')`
 	);
@@ -241,23 +232,24 @@ async function addSession(login) {
 		id: uuid,
 	};
 }
-async function confirmSession(confirmationId) {
-	const rows = await Connector.read(
-		`SELECT * FROM SessionExpiration WHERE sessionId='${confirmationId}'`
-	);
-	if (Helper.emptyOrRows(rows).length > 0) {
-		const sessionActiveAffected = await Connector.set(
-			`DELETE FROM SessionExpiration WHERE sessionId='${confirmationId}'`
-		);
-		return Helper.emptyOrRows(sessionActiveAffected).length > 0;
-	} else {
-		return false;
-	}
-}
+// async function confirmSession(confirmationId) {
+// 	const rows = await Connector.read(
+// 		`SELECT * FROM SessionExpiration WHERE sessionId='${confirmationId}'`
+// 	);
+// 	if (Helper.emptyOrRows(rows).length > 0) {
+// 		const sessionActiveAffected = await Connector.set(
+// 			`DELETE FROM SessionExpiration WHERE sessionId='${confirmationId}'`
+// 		);
+// 		return Helper.emptyOrRows(sessionActiveAffected).length > 0;
+// 	} else {
+// 		return false;
+// 	}
+// }
 async function checkSession(login, session) {
 	const rows = await Connector.read(
 		`SELECT * FROM Sessions WHERE login='${login}' AND sessionId='${session}'`
 	);
+	console.log('check session', Helper.emptyOrRows(rows).length);
 	return Helper.emptyOrRows(rows).length > 0;
 }
 
@@ -268,9 +260,17 @@ async function getSession(session) {
 	};
 }
 
+async function deleteSession(login, session) {
+	const rows = await Connector.read(
+		`DELETE FROM Sessions WHERE login='${login}' AND sessionId='${session}'`
+	);
+	return {
+		rows: Helper.emptyOrRows(rows),
+	};
+}
+
 async function getGroupId(login) {
 	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login='${login}'`);
-	console.log('group id', rows);
 	if (!rows) {
 		return {
 			rows: 'User',
@@ -281,26 +281,24 @@ async function getGroupId(login) {
 	};
 }
 module.exports = {
-	activateUser,
-	addExpiration,
 	getPaths,
 	getGroupId,
 	checkSession,
-	confirmSession,
 	getSession,
 	addSession,
 	checkSession,
+	checkUserExistance,
 	getPrices,
 	addPrice,
 	deletePrice,
 	getFlyers,
 	addFlyer,
 	deleteFlyer,
+	deleteSession,
 	addUser,
 	deleteUser,
 	checkUserPassword,
 	checkUserGroupId,
-	validateLogin,
 	validatePassword,
 	validatePasswordInput,
 };
