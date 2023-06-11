@@ -26,7 +26,6 @@ function AppTabsContent(props: { translations: ITranslations }) {
 
 	function renderTabs() {
 		const tabs: JSX.Element[] = [];
-		console.log('RENDERING TABS', tabMap);
 		if (tabMap)
 			tabMap.forEach(
 				(
@@ -39,7 +38,6 @@ function AppTabsContent(props: { translations: ITranslations }) {
 					>,
 					pathKey
 				) => {
-					console.log('tab map', tabMap);
 					tabs.push(
 						<Route
 							path={`${pathKey}`}

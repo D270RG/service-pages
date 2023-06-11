@@ -25,10 +25,10 @@ export default function AppWithStore() {
 	const login = useSelector(selectLoggedState);
 
 	useEffect(() => {
+		console.log('received login', login);
 		store.dispatch(getTabs({ login: login }));
 	}, [login]);
 	useEffect(() => {
-		console.log('received tabs', tabs);
 		if (Object.keys(tabs).length > 0) {
 			store.dispatch(
 				getPrices({

@@ -3,13 +3,13 @@ import { loggedInSlice } from 'pages/store/reducers';
 import store from 'pages/store/store';
 
 function checkLoggedState(response: Response): void {
-	console.log('check logged headers');
-	console.log(response.headers.get('Loggedin'));
 	if (response.headers.get('Loggedin') === 'true') {
+		console.log('logged state true', response.url);
 		store.dispatch(
 			loggedInSlice.actions.setLoggedState({ login: response.headers.get('Login') || undefined })
 		);
 	} else {
+		console.log('logged state false', response.url);
 		store.dispatch(loggedInSlice.actions.setLoggedState({ login: undefined }));
 	}
 }
@@ -93,11 +93,9 @@ export class AuthHttpClient {
 }
 export class HttpClient {
 	public getPaths(login: string | undefined): Promise<ITabList> {
-		console.log('get paths by login', login);
 		let p = new Promise<ITabList>((resolve, reject) => {
 			fetch(`http://${serverAddress}/paths`, {
 				method: 'POST',
-				body: JSON.stringify({ login }),
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -105,12 +103,10 @@ export class HttpClient {
 			})
 				.then((response: Response) => {
 					checkLoggedState(response);
-					console.log('paths response', response);
 					return response.json();
 				})
 				.then((jsonData: string) => JSON.parse(jsonData))
 				.then((data: ITabList) => {
-					console.log('tabs', data);
 					return resolve(data);
 				})
 				.catch((err: Error) => {

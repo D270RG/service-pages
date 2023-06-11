@@ -27,8 +27,8 @@ async function set(query) {
 		conn.query('SET GLOBAL connect_timeout=28800');
 		conn.query('SET GLOBAL interactive_timeout=28800');
 		conn.query('SET GLOBAL wait_timeout=28800');
-		const res = await conn.query(query);
-		return res.changedRows;
+		const rows = await conn.query(query);
+		return rows;
 	} finally {
 		if (conn) conn.release();
 	}

@@ -3,14 +3,14 @@ import './ProfilePicture.scss';
 import { Button, Dropdown } from 'react-bootstrap';
 import { AuthHttpClient } from 'HttpClient';
 
-function ProfilePicture(props: { login: string; className: string }) {
+function ProfilePicture(props: { login: string; className?: string; variant?: string }) {
 	const authHttpClient = new AuthHttpClient();
 	return (
 		<Dropdown className={props.className}>
-			<Dropdown.Toggle variant='light'>
+			<Dropdown.Toggle variant='outline-dark'>
 				<i className='bi bi-person-circle'></i>
 			</Dropdown.Toggle>
-			<Dropdown.Menu variant='dark'>
+			<Dropdown.Menu variant={props.variant || 'dark'}>
 				<Dropdown.Item
 					disabled
 					className='text-center'>

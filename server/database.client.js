@@ -227,6 +227,7 @@ async function addSession(login) {
 	const affectedSessions = await Connector.set(
 		`INSERT INTO Sessions(login,sessionId) VALUES ('${login}','${uuid}')`
 	);
+	console.log('add session', affectedSessions);
 	return {
 		affected: Helper.checkAffected(affectedSessions),
 		id: uuid,
@@ -250,41 +251,36 @@ async function checkSession(login, session) {
 		`SELECT * FROM Sessions WHERE login='${login}' AND sessionId='${session}'`
 	);
 	console.log('check session', Helper.emptyOrRows(rows).length);
-	return Helper.emptyOrRows(rows).length > 0;
+	return Helper.checkAffected(rows);
 }
 
-async function getSession(session) {
-	const rows = await Connector.read(`SELECT login FROM Sessions WHERE sessionId='${session}'`);
-	return {
-		rows: Helper.emptyOrRows(rows),
-	};
-}
+// async function getSession(session) {
+// 	const rows = await Connector.read(`SELECT login FROM Sessions WHERE sessionId='${session}'`);
+// 	return rows[0].login,
+
+// }
 
 async function deleteSession(login, session) {
 	const rows = await Connector.read(
 		`DELETE FROM Sessions WHERE login='${login}' AND sessionId='${session}'`
 	);
-	return {
-		rows: Helper.emptyOrRows(rows),
-	};
+	return Helper.checkAffected(rows);
 }
 
 async function getGroupId(login) {
-	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login='${login}'`);
+	const rows = await Connector.read(`SELECT groupid FROM Users WHERE login='${login}'`);
 	if (!rows) {
 		return {
-			rows: 'User',
+			rows: 'user',
 		};
 	}
-	return {
-		rows: Helper.emptyOrRows(rows),
-	};
+	return rows[0].groupid;
 }
 module.exports = {
 	getPaths,
 	getGroupId,
 	checkSession,
-	getSession,
+	// getSession,
 	addSession,
 	checkSession,
 	checkUserExistance,

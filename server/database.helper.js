@@ -4,8 +4,11 @@ function emptyOrRows(rows) {
 	}
 	return rows;
 }
-function checkAffected(affected) {
-	if (affected === 0) {
+function checkAffected(rows) {
+	if (!rows) {
+		return false;
+	}
+	if (rows.length === 0) {
 		return false;
 	}
 	return true;
