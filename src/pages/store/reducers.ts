@@ -1,8 +1,19 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { ICartItem, IPriceList, ITabList, ITranslations } from 'p@/common-types/common-types';
+import {
+	ICartItem,
+	IFlyer,
+	IPriceList,
+	ITabList,
+	ITranslations,
+} from 'p@/common-types/common-types';
 
 //----------------------------------payload interfaces
+interface FlyerActionPayload {
+	flyers?: IFlyer[];
+	error?: Error;
+}
+
 interface LoggedInPayload {
 	login: string | undefined;
 }
@@ -37,6 +48,10 @@ interface FormActionPayload {
 }
 
 //----------------------------------states
+interface IFlyerInitialState {
+	flyers: IFlyer[];
+	error?: Error;
+}
 interface ILoggedInInitialState {
 	login: string | undefined;
 }
@@ -51,6 +66,9 @@ interface ITabsInitialState {
 	tabs: ITabList | undefined;
 	error?: Error;
 }
+export const flyersInitialState: IFlyerInitialState = {
+	flyers: [],
+};
 export const loggedInInitialState: ILoggedInInitialState = {
 	login: undefined,
 };
@@ -73,6 +91,18 @@ export const cartAdapter = createEntityAdapter<ICartItem>({
 	sortComparer: (a, b) => a.type.localeCompare(b.type),
 });
 //----------------------------------reducer
+export const flyerSlice = createSlice({
+	name: 'flyers',
+	initialState: flyersInitialState,
+	reducers: {
+		getFlyersSuccess(state, action: PayloadAction<FlyerActionPayload>) {
+			state.flyers = [...(action.payload.flyers || [])];
+		},
+		getFlyersError(state, action: PayloadAction<FlyerActionPayload>) {
+			state.error = action.payload.error;
+		},
+	},
+});
 export const loggedInSlice = createSlice({
 	name: 'loggedIn',
 	initialState: loggedInInitialState,
@@ -134,7 +164,6 @@ export const formSlice = createSlice({
 	reducers: {
 		setVisibility(state, action: PayloadAction<FormActionPayload>) {
 			state.visible = action.payload.visible;
-			console.log(state.visible);
 		},
 	},
 });

@@ -4,12 +4,10 @@ import store from 'pages/store/store';
 
 function checkLoggedState(response: Response): void {
 	if (response.headers.get('Loggedin') === 'true') {
-		console.log('logged state true', response.url);
 		store.dispatch(
 			loggedInSlice.actions.setLoggedState({ login: response.headers.get('Login') || undefined })
 		);
 	} else {
-		console.log('logged state false', response.url);
 		store.dispatch(loggedInSlice.actions.setLoggedState({ login: undefined }));
 	}
 }
@@ -92,7 +90,7 @@ export class AuthHttpClient {
 	}
 }
 export class HttpClient {
-	public getPaths(login: string | undefined): Promise<ITabList> {
+	public getPaths(): Promise<ITabList> {
 		let p = new Promise<ITabList>((resolve, reject) => {
 			fetch(`http://${serverAddress}/paths`, {
 				method: 'POST',
@@ -156,6 +154,58 @@ export class HttpClient {
 				.then((jsonData: string) => {
 					return JSON.parse(jsonData);
 				})
+				.then((data: IFlyer[]) => {
+					resolve(data);
+				})
+				.catch((err: Error) => {
+					reject(err);
+					console.log(err.message);
+				});
+		});
+		return p;
+	}
+	public addFlyer(
+		language: string,
+		title: string,
+		text: string,
+		image: File | undefined
+	): Promise<IFlyer[]> {
+		let data = new FormData();
+		data.append('file', image as File);
+		data.append('title', title);
+		data.append('text', text);
+		data.append('language', language);
+
+		let p = new Promise<IFlyer[]>((resolve, reject) => {
+			fetch(`http://${serverAddress}/addFlyer`, {
+				method: 'POST',
+				body: data,
+				credentials: 'include',
+			})
+				.then((response: Response) => response.json())
+				.then((jsonData: string) => JSON.parse(jsonData))
+				.then((data: IFlyer[]) => {
+					resolve(data);
+				})
+				.catch((err: Error) => {
+					reject(err);
+					console.log(err.message);
+				});
+		});
+		return p;
+	}
+	public deleteFlyer(id: string, language: string): Promise<IFlyer[]> {
+		let p = new Promise<IFlyer[]>((resolve, reject) => {
+			fetch(`http://${serverAddress}/deleteFlyer`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ id, language }),
+				credentials: 'include',
+			})
+				.then((response: Response) => response.json())
+				.then((jsonData: string) => JSON.parse(jsonData))
 				.then((data: IFlyer[]) => {
 					resolve(data);
 				})

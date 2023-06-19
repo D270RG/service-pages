@@ -2,34 +2,22 @@ import Flyer from 'pages/elements/flyer/Flyer';
 import Grid from 'pages/elements/grid/Grid';
 import Loading from 'pages/elements/loading/Loading';
 import TextAnim from 'pages/elements/TextAnim/TextAnim';
-import Image from 'next/image';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
-import {
-	ICurrencyTranslations,
-	IFlyer,
-	ITabTranslation,
-	ITranslationEntry,
-} from 'p@/common-types/common-types';
-import { HttpClient } from 'HttpClient';
+import { IFlyer, ITranslations } from 'p@/common-types/common-types';
+import store from 'pages/store/store';
+import { getFlyers } from 'pages/store/effects';
+import { useSelector } from 'react-redux';
+import { selectFlyers } from 'pages/store/selectors';
 
-function Home(props: {
-	tabTranslate: ITabTranslation;
-	generalTranslate: ITranslationEntry;
-	currencyTranslate: ICurrencyTranslations;
-}) {
-	const [flyers, setFlyers] = useState<IFlyer[]>([]);
+function Home(props: { translations: ITranslations; pathKey: string }) {
 	const [renderedFlyers, setRenderedFlyers] = useState<JSX.Element[]>([]);
-	const httpClient = new HttpClient();
+	const flyers = useSelector(selectFlyers);
 	useEffect(() => {
-		httpClient.getFlyers(navigator.language).then((flyers: IFlyer[]) => {
-			console.log('received flyers', flyers);
-			setFlyers([...flyers]);
-		});
+		store.dispatch(getFlyers({ language: navigator.language }));
 	}, []);
 	useEffect(() => {
 		renderFlyers();
-		console.log(props.tabTranslate);
 	}, [flyers]);
 	function renderFlyers() {
 		let flyersJSX: JSX.Element[] = [];
@@ -39,9 +27,9 @@ function Home(props: {
 					<Flyer
 						title={flyer.title}
 						contentImage={
-							<Image
-								src={require(`p@/images/${flyer.id}.png`)}
-								alt={flyer.href}></Image>
+							<img
+								src={`/images/${flyer.id}.png`}
+								alt={flyer.href}></img>
 						}
 						contentText={flyer.text}
 						href={flyer.href}
@@ -54,7 +42,7 @@ function Home(props: {
 	return (
 		<div className='mb-5'>
 			<TextAnim text='ЯСВЕТЛЫЙ'></TextAnim>
-			{props.tabTranslate ? (
+			{props.translations ? (
 				<Grid>{renderedFlyers}</Grid>
 			) : (
 				<Row>

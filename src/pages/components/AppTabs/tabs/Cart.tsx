@@ -2,17 +2,11 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import store from 'pages/store/store';
 import { cartSlice } from 'pages/store/reducers';
 import { cartSelectors } from 'pages/store/selectors';
-import { ICartItem, ICurrencyTranslations, ITabTranslation, ITranslationEntry } from 'p@/common-types/common-types';
+import { ICartItem, ITranslations } from 'p@/common-types/common-types';
 import { Button } from 'react-bootstrap';
-import { HttpClient } from 'HttpClient';
-import Loading from 'pages/elements/loading/Loading';
 import TypeContainer from 'pages/elements/typeContainer/TypeContainer';
 
-function Cart(props: {
-	tabTranslate: ITabTranslation;
-	generalTranslate: ITranslationEntry;
-	currencyTranslate: ICurrencyTranslations;
-}) {
+function Cart(props: { translations: ITranslations; pathKey: string }) {
 	const [cartItems, setCartItems] = useState<ICartItem[]>([]);
 	const [price, setPrice] = useState<number | undefined>(undefined);
 	const [priceCurrency, setPriceCurrency] = useState<string>('');
@@ -35,12 +29,12 @@ function Cart(props: {
 			{cartItems.length > 0 ? (
 				<div className='mb-3 d-flex justify-content-between'>
 					<h3>
-						{price} {props.currencyTranslate[priceCurrency]}
+						{price} {props.translations.currencies[priceCurrency]}
 					</h3>
-					<Button className='btn btn-dark'>{props.generalTranslate.order}</Button>
+					<Button className='btn btn-dark'>{props.translations.general.order}</Button>
 				</div>
 			) : (
-				<h6 className='text-muted'>{props.tabTranslate.texts.isEmpty}</h6>
+				<h6 className='text-muted'>{props.translations.tabs[props.pathKey].texts.isEmpty}</h6>
 			)}
 			{cartItems.map((itemEntry) => {
 				return (
@@ -56,7 +50,7 @@ function Cart(props: {
 						</div>
 						<div className='priceContainer'>
 							<h2>
-								{itemEntry.price} {props.currencyTranslate[itemEntry.currency]}
+								{itemEntry.price} {props.translations.currencies[itemEntry.currency]}
 							</h2>
 						</div>
 						<button

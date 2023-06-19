@@ -2,7 +2,10 @@ const PORT = 4000;
 
 const express = require('express');
 const path = require('path');
+const multer = require('multer');
+const crypto = require('crypto');
 const db = require('./database.client');
+const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const app = express();
 const cors = require('cors');
@@ -14,7 +17,7 @@ app.use(
 	})
 );
 app.use(cookieParser());
-
+app.use(express.static('./build'));
 const authMiddleware = {
 	userAlreadyExists: async function (req, res, next) {
 		let userExistance = await db.checkUserExistance(req.body.login);
@@ -24,7 +27,6 @@ const authMiddleware = {
 			});
 			return;
 		}
-		console.log('userAlreadyExists check');
 		next();
 	},
 	userNotExists: async function (req, res, next) {
@@ -33,7 +35,6 @@ const authMiddleware = {
 			res.status(503).json({ error: 'userNotExists' });
 			return;
 		}
-		console.log('userExistance check');
 		next();
 	},
 	sessionNotExists: async function (req, res, next) {
@@ -47,7 +48,6 @@ const authMiddleware = {
 				return;
 			}
 		}
-		console.log('sessionNotExists check');
 		res.setHeader('Login', req.body.login);
 		res.setHeader('Loggedin', 'true');
 		next();
@@ -67,7 +67,6 @@ const authMiddleware = {
 		}
 		res.setHeader('Login', login);
 		res.setHeader('Loggedin', 'true');
-		console.log('sessionNotExists check');
 		next();
 	},
 	password: async function (req, res, next) {
@@ -76,14 +75,13 @@ const authMiddleware = {
 			res.status(503).json({ error: 'wrongPassword' });
 			return;
 		}
-		console.log('passwordCheck check');
 		next();
 	},
 };
 const accessMiddleware = {
 	mustBeAdmin: async function (req, res, next) {
 		let login = req.cookies['login'];
-		let session = req.cookies['Sessionid'];
+		let session = req.cookies['sessionId'];
 		let checkSession = await db.checkSession(login, session);
 		if (!checkSession) {
 			res.locals.admin = false;
@@ -102,19 +100,14 @@ const sessionCheckMiddleware = {
 	sessionExistsCookie: async function (req, res, next) {
 		let login = req.cookies['login'];
 		let sessionId = req.cookies['sessionId'];
-		console.log('sessionExists check', req.originalUrl, login, sessionId);
 		if (login !== undefined && sessionId !== undefined) {
 			let sessionCheck = await db.checkSession(login, sessionId);
-			console.log('session check result', sessionCheck);
 			if (sessionCheck) {
-				console.log('writing cookies');
 				writeCookie(res, req, login, sessionId);
 			} else {
-				console.log('deleting cookies no session');
 				deleteCookie(res, req);
 			}
 		} else {
-			console.log('deleting cookies', login, sessionId);
 			deleteCookie(res, req);
 		}
 		next();
@@ -156,7 +149,11 @@ function deleteCookie(res, req) {
 	res.clearCookie('sessionId', { sameSite: 'none', secure: true });
 	res.locals.session = false;
 }
-app.use(express.static('./build'));
+app.get('/images/*', (req, res, next) => {
+	req.headers['Content-Type'] = 'image/png';
+	next();
+});
+
 app.post('*', sessionCheckMiddleware.sessionExistsCookie);
 //UPDATE
 app.post(
@@ -230,14 +227,48 @@ app.post('/unlogin', express.json(), async (req, res) => {
 	deleteCookie(res, req);
 	res.status(200).send();
 });
-app.post('/addFlyer', [express.json(), accessMiddleware.mustBeAdmin], async (req, res) => {
+
+function validFileFormat(fileMimeType) {
+	var mimetypes = ['image/bmp', 'image/jpeg', 'image/x-png', 'image/png', 'image/gif'];
+	return mimetypes.indexOf(fileMimeType) > -1;
+}
+function fileFilter(req, file, cb) {
+	cb(null, validFileFormat(file.mimetype));
+}
+const storage = multer.diskStorage({
+	destination: function (req, file, callback) {
+		callback(null, './build/images/');
+	},
+
+	filename: function (req, file, callback) {
+		const uuid = crypto.randomBytes(16).toString('hex');
+		callback(null, `${uuid}.png`);
+	},
+});
+const upload = multer({ storage, fileFilter, limits: 100000000 });
+app.post('/addFlyer', [accessMiddleware.mustBeAdmin, upload.single('file')], async (req, res) => {
 	if (!res.locals.session || !res.locals.admin) {
+		console.log('failing 503');
 		res.status(503).json({ error: 'notPermitted' });
 	}
-	const flyer = req.body.flyer;
-	let insertionResult = await addFlyer(flyer);
+	console.log('body', req.body);
+	const flyerTitle = req.body.title;
+	const flyerText = req.body.text;
+	const language = req.body.language;
+	let containsImage = false;
+	if (req.file) {
+		containsImage = true;
+	}
+	console.log(req.file.filename, req.file.filename.split('.')[0]);
+	let insertionResult = await db.addFlyer(
+		language,
+		flyerTitle,
+		flyerText,
+		req.file.filename.split('.')[0]
+	);
+	console.log('responding', insertionResult);
 	if (insertionResult.affected) {
-		res.status(200).send();
+		res.status(200).json(JSON.stringify(insertionResult.flyers.rows));
 	} else {
 		res.status(503).json({ error: 'databaseError' });
 	}
@@ -247,15 +278,21 @@ app.post('/deleteFlyer', [express.json(), accessMiddleware.mustBeAdmin], async (
 		res.status(503).json({ error: 'notPermitted' });
 	}
 	const id = req.body.id;
-	let deletionResult = await db.deleteFlyer(id);
-
+	const language = req.body.language;
+	console.log('with id', req.body);
+	let deletionResult = await db.deleteFlyer(id, req.body.language);
+	console.log('deletionResult', deletionResult);
 	if (deletionResult.affected) {
-		res.status(200).send();
+		console.log('unlinking');
+		fs.unlink(`./build/images/${id}.png`, async () => {
+			const flyers = await db.getFlyers(language);
+			res.status(200).json(JSON.stringify(flyers.rows));
+		});
 	} else {
 		res.status(503).json({ error: 'databaseError' });
 	}
 });
-
+app.use(express.static('./build/images/'));
 //READ
 app.post('/paths', express.json(), async (req, res) => {
 	let userGroupId = 'user';

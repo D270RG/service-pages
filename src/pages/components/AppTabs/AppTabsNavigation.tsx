@@ -14,19 +14,17 @@ import { ITabTranslations } from 'p@/common-types/common-types';
 import { InView } from 'react-intersection-observer';
 import { TabContext } from 'pages/store/AppWithStore';
 
+let hiddenNavs: string[] = [];
 function AppTabsNavigation(props: {
 	tabTranslations: ITabTranslations;
 	setDropdownItems: (dropdownItems: JSX.Element[]) => void;
 	tabMap: Map<string, LazyExoticComponent<FunctionComponent>>;
 }) {
 	const [navs, setNavs] = useState<JSX.Element[]>([]);
-
-	const hiddenNavs: string[] = [];
 	const location = useLocation();
 
 	useEffect(() => {
 		const navs: JSX.Element[] = [];
-		console.log('tabmap nav', props.tabMap);
 		if (props.tabMap)
 			props.tabMap.forEach((ComponentValue, pathKey) => {
 				if (!unrenderedTabs.hasOwnProperty(pathKey))
@@ -43,10 +41,10 @@ function AppTabsNavigation(props: {
 									}
 								} else {
 									//add to dropdown
-									console.log('pushing', entry.target.id);
+
 									hiddenNavs.push(entry.target.id);
 								}
-								console.log('tab translations', props.tabTranslations, hiddenNavs);
+
 								//call dropdown callback
 								props.setDropdownItems(
 									hiddenNavs.map((navId: string) => {
@@ -71,18 +69,8 @@ function AppTabsNavigation(props: {
 						</InView>
 					);
 			});
-		console.log('setting navs', navs);
-		setNavs(navs);
 
-		console.log(
-			'path',
-			location.pathname
-				.slice(0, -1)
-				.slice(
-					location.pathname.slice(0, -1).lastIndexOf('/') + 1,
-					location.pathname.slice(0, -1).length
-				)
-		);
+		setNavs(navs);
 	}, [props.tabMap]);
 	return (
 		<div>

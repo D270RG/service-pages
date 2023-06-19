@@ -4,47 +4,39 @@ import Form from 'react-bootstrap/Form';
 import { Button, InputGroup } from 'react-bootstrap';
 import store from 'pages/store/store';
 import { formSlice } from 'pages/store/reducers';
-import { IError, ITranslationEntry } from 'p@/common-types/common-types';
+import { ICheck, IError, IField, ITranslationEntry } from 'p@/common-types/common-types';
 import { AuthHttpClient } from 'HttpClient';
 import ErrorToast from '../errorToast/ErrorToast';
-interface IField {
-	value: string;
-	valid: boolean | undefined;
-	message?: string;
-	finalCheck?: boolean;
-}
-interface ICheck {
-	valid: boolean;
-	message?: string;
-}
+
 function ModalForm(props: {
 	formTranslations: ITranslationEntry;
 	errorTranslations: ITranslationEntry;
 }) {
 	const authClient = new AuthHttpClient();
 	const [formMode, setFormMode] = useState<'login' | 'register'>('login');
-	const [formStateLogin, setFormStateLogin] = useState<IField>({ value: '', valid: undefined });
-	const [formStatePassword, setFormStatePassword] = useState<IField>({
+	const [formStateLogin, setFormStateLogin] = useState<IField<string>>({
 		value: '',
 		valid: undefined,
 	});
-	const [formStatePasswordRepeat, setFormStatePasswordRepeat] = useState<IField>({
+	const [formStatePassword, setFormStatePassword] = useState<IField<string>>({
+		value: '',
+		valid: undefined,
+	});
+	const [formStatePasswordRepeat, setFormStatePasswordRepeat] = useState<IField<string>>({
 		value: '',
 		valid: undefined,
 	});
 	const [error, setError] = useState<string | undefined>(undefined);
 
 	function onSubmit() {
-		console.log('on submit');
 		setError(undefined);
 		let emptyCheck = checkRequiredFields();
 		if (formMode === 'login') {
 			if (emptyCheck && formStateLogin.valid && formStatePassword.valid) {
 				const clientLogin = authClient.login(formStateLogin.value, formStatePassword.value);
-				console.log('logging', formStateLogin.value, formStatePassword.value);
+
 				clientLogin.then(
 					() => {
-						console.log('client register success');
 						onCancel();
 					},
 					(Error: IError) => {
@@ -65,7 +57,6 @@ function ModalForm(props: {
 					.then();
 				clientRegister.then(
 					() => {
-						console.log('client login success');
 						onCancel();
 					},
 					(Error: IError) => {

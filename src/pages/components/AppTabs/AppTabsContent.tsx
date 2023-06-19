@@ -31,9 +31,8 @@ function AppTabsContent(props: { translations: ITranslations }) {
 				(
 					ComponentValue: React.LazyExoticComponent<
 						React.FunctionComponent<{
-							tabTranslate: ITabTranslation;
-							generalTranslate: ITranslationEntry;
-							currencyTranslate: ICurrencyTranslations;
+							translations: ITranslations;
+							pathKey: string;
 						}>
 					>,
 					pathKey
@@ -52,9 +51,8 @@ function AppTabsContent(props: { translations: ITranslations }) {
 											</div>
 										)}
 										<ComponentValue
-											tabTranslate={props.translations.tabs[pathKey]}
-											generalTranslate={props.translations.general}
-											currencyTranslate={props.translations.currencies}
+											translations={props.translations}
+											pathKey={pathKey}
 										/>
 										{prices
 											? prices.hasOwnProperty(pathKey) && (

@@ -6,18 +6,30 @@ function Flyer(props: {
 	title: string;
 	contentImage?: React.ReactElement;
 	contentText: string;
-	href: string;
+	href?: string;
 }) {
 	return (
-		<Link to={props.href}>
-			<div className='flyer'>
-				<div className='titleContainer'>
-					<h2>{props.title}</h2>
+		<div>
+			{props.href ? (
+				<Link to={props.href}>
+					<div className='flyer cursor-pointer'>
+						<div className='titleContainer'>
+							<h2>{props.title}</h2>
+						</div>
+						<div className='imgContainer'>{props.contentImage}</div>
+						<div className='textContainer'>{props.contentText}</div>
+					</div>
+				</Link>
+			) : (
+				<div className='flyer'>
+					<div className='titleContainer'>
+						<h2>{props.title}</h2>
+					</div>
+					<div className='imgContainer'>{props.contentImage}</div>
+					<div className='textContainer'>{props.contentText}</div>
 				</div>
-				<div className='imgContainer'>{props.contentImage}</div>
-				<div className='textContainer'>{props.contentText}</div>
-			</div>
-		</Link>
+			)}
+		</div>
 	);
 }
 

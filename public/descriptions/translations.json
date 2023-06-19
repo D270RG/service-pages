@@ -10,6 +10,14 @@
 			"rub": "руб.",
 			"usd": "usd."
 		},
+		"addFlyerForm": {
+			"submit": "Добавить",
+			"delete": "Удалить",
+			"addFlyer": "Добавить флаер",
+			"title": "Заголовок",
+			"text": "Текст",
+			"required": "Обязательное поле"
+		},
 		"loginForm": {
 			"loginTitle": "Вход",
 			"registerTitle": "Регистрация",
@@ -67,6 +75,11 @@
 				"texts": {
 					"isEmpty": "Корзина пуста"
 				},
+				"titles": {}
+			},
+			"admin": {
+				"title": "Панель управления",
+				"texts": {},
 				"titles": {}
 			}
 		}

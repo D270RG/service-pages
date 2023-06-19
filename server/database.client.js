@@ -24,7 +24,6 @@ function generatePassword(password) {
 }
 function validatePassword(password, salt, hash) {
 	let saltedPassword = sha512(password, salt);
-	console.log('salted password', saltedPassword);
 	return hash === saltedPassword.hash;
 }
 function validatePasswordInput(password) {
@@ -48,12 +47,24 @@ function combineSelector(paths) {
 }
 
 async function getPaths(groupId) {
-	const rows = await Connector.read(
-		`SELECT Paths.component,Paths.path FROM Paths 
-	 	 JOIN AccessList 
-		 ON AccessList.path = Paths.path 
-		 WHERE AccessList.groupid='${groupId}'`
-	);
+	let rows = '';
+	if (groupId === 'admin') {
+		rows = await Connector.read(
+			`SELECT Paths.component,Paths.path FROM Paths 
+			  JOIN AccessList 
+			 ON AccessList.path = Paths.path 
+			 WHERE AccessList.groupid='user' 
+			 OR AccessList.groupid='admin'`
+		);
+	} else {
+		rows = await Connector.read(
+			`SELECT Paths.component,Paths.path FROM Paths 
+			  JOIN AccessList 
+			 ON AccessList.path = Paths.path 
+			 WHERE AccessList.groupid='user'`
+		);
+	}
+
 	return Helper.emptyOrRows(rows);
 }
 // async function addPath(path,component,groupId) {
@@ -139,31 +150,17 @@ async function addPrice(priceObject) {
 		affected: Helper.checkAffected(affectedDescriptions) & Helper.checkAffected(affectedPrices),
 	};
 }
-async function addFlyer(flyerObject) {
-	const uuid = crypto.randomBytes(32).toString('hex');
+async function addFlyer(language, title, text, uuid) {
 	const affectedFlyers = await Connector.read(
-		`INSERT INTO Flyers(
-			id,
-			href) 
-	     VALUES 
-			(${uuid},
-			${flyerObject.href})`
+		`INSERT INTO Flyers (id,href) VALUES ('${uuid}','home')`
 	);
 	const affectedDescriptions = await Connector.read(
-		`INSERT INTO FlyerDescriptions(
-			id,
-			language,
-			title,
-			text) 
-	     VALUES 
-			('${uuid}',
-			'${flyerObject.language}',
-			'${flyerObject.title}',
-			'${flyerObject.text}')`
+		`INSERT INTO FlyerDescriptions (id,language,title,text) VALUES ('${uuid}','${language}','${title}','${text}')`
 	);
+	const flyers = await getFlyers(language);
 	return {
 		affected: Helper.checkAffected(affectedFlyers) & Helper.checkAffected(affectedDescriptions),
-		id: uuid,
+		flyers,
 	};
 }
 
@@ -180,29 +177,28 @@ async function deletePrice(id) {
 		affected: Helper.checkAffected(affectedPrices) & Helper.checkAffected(affectedDescriptions),
 	};
 }
-async function deleteFlyer(id) {
+async function deleteFlyer(id, language) {
 	const affectedFlyers = await Connector.set(`DELETE FROM Flyers WHERE id='${id}'`);
 	const affectedDescriptions = await Connector.set(
 		`DELETE FROM FlyerDescriptions WHERE id='${id}'`
 	);
+	const flyers = await getFlyers(language);
 	return {
 		affected: Helper.checkAffected(affectedFlyers) & Helper.checkAffected(affectedDescriptions),
+		flyers,
 	};
 }
 
 async function checkUserPassword(login, password) {
 	const rows = await Connector.read(`SELECT * FROM Users WHERE login='${login}'`);
 	if (rows.length === 0) {
-		console.log('No login found');
 		return false;
 	}
-	console.log('password rows', rows);
 	return validatePassword(password, rows[0].salt, rows[0].password);
 }
 async function checkUserGroupId(login, group) {
 	const rows = await Connector.read(`SELECT (groupid) FROM Users WHERE login='${login}'`);
-	if (rows.length === 1) {
-		console.log('No login found');
+	if (rows.length === 0) {
 		return false;
 	}
 	return rows[0].groupid === group;
@@ -227,7 +223,6 @@ async function addSession(login) {
 	const affectedSessions = await Connector.set(
 		`INSERT INTO Sessions(login,sessionId) VALUES ('${login}','${uuid}')`
 	);
-	console.log('add session', affectedSessions);
 	return {
 		affected: Helper.checkAffected(affectedSessions),
 		id: uuid,
@@ -250,7 +245,6 @@ async function checkSession(login, session) {
 	const rows = await Connector.read(
 		`SELECT * FROM Sessions WHERE login='${login}' AND sessionId='${session}'`
 	);
-	console.log('check session', Helper.emptyOrRows(rows).length);
 	return Helper.checkAffected(rows);
 }
 
@@ -269,7 +263,7 @@ async function deleteSession(login, session) {
 
 async function getGroupId(login) {
 	const rows = await Connector.read(`SELECT groupid FROM Users WHERE login='${login}'`);
-	if (!rows) {
+	if (rows.length === 0) {
 		return {
 			rows: 'user',
 		};

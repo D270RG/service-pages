@@ -67,6 +67,8 @@ export interface ITranslations {
 	currencies: ICurrencyTranslations;
 	tabs: ITabTranslations;
 	loginForm: ITranslationEntry;
+	addFlyerForm: ITranslationEntry;
+	errors: ITranslationEntry;
 }
 
 export interface ITabList {
@@ -80,4 +82,15 @@ export interface IFlyer {
 
 export interface IError {
 	error: string;
+}
+
+export interface IField<T> {
+	value: T;
+	valid: boolean | undefined;
+	message?: string;
+	finalCheck?: boolean;
+}
+export interface ICheck {
+	valid: boolean;
+	message?: string;
 }

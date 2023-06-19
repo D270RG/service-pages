@@ -1,7 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { cartSlice, formSlice, loggedInSlice, pricesSlice, tabsSlice } from './reducers';
+import {
+	cartSlice,
+	flyerSlice,
+	formSlice,
+	loggedInSlice,
+	pricesSlice,
+	tabsSlice,
+} from './reducers';
 let store = configureStore({
 	reducer: {
+		flyerReducer: flyerSlice.reducer,
 		tabsReducer: tabsSlice.reducer,
 		cartReducer: cartSlice.reducer,
 		pricesReducer: pricesSlice.reducer,

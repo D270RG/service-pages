@@ -25,7 +25,6 @@ export default function AppWithStore() {
 	const login = useSelector(selectLoggedState);
 
 	useEffect(() => {
-		console.log('received login', login);
 		store.dispatch(getTabs({ login: login }));
 	}, [login]);
 	useEffect(() => {
@@ -47,7 +46,6 @@ export default function AppWithStore() {
 					navElement={
 						<Components.AppTabsNavigation
 							setDropdownItems={(items) => {
-								console.log('set dropdownItems');
 								setDropdownItems(items);
 							}}
 							tabMap={tabMap}

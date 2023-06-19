@@ -6,7 +6,6 @@ export function mapTabObjects(
 ): Map<string, React.LazyExoticComponent<React.FunctionComponent<{}>>> {
 	const TabMap: Map<string, React.LazyExoticComponent<React.FunctionComponent<{}>>> = new Map([]);
 	Object.keys(tabObject).forEach((tabKey) => {
-		console.log('importing', tabKey);
 		TabMap.set(
 			tabObject[tabKey],
 			React.lazy(() => import(`../src/pages/components/AppTabs/tabs/${tabKey}.tsx`))

@@ -6,3 +6,4 @@ export const selectLoggedState = (state: RootState) => state.loggedInReducer.log
 export const selectPrices = (state: RootState) => state.pricesReducer.prices;
 export const selectTabs = (state: RootState) => state.tabsReducer.tabs;
 export const selectFormVisibility = (state: RootState) => state.formReducer.visible;
+export const selectFlyers = (state: RootState) => state.flyerReducer.flyers;

@@ -12,10 +12,12 @@
 	color: white;
 	box-shadow: 17px 20px 40px rgba(0, 0, 0, 0.51);
 	transition-duration: 1s;
-	cursor: pointer;
 	// &:hover {
 	// 	transform: scale(1.1);
 	// }
+}
+.cursor-pointer {
+	cursor: pointer;
 }
 .imgContainer {
 	width: 100%;

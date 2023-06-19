@@ -2,14 +2,11 @@ import {
 	ICurrencyTranslations,
 	ITabTranslation,
 	ITranslationEntry,
+	ITranslations,
 } from 'p@/common-types/common-types';
 import React, { FunctionComponent } from 'react';
 
-function LaptopRepair(props: {
-	tabTranslate: ITabTranslation;
-	generalTranslate: ITranslationEntry;
-	currencyTranslate: ICurrencyTranslations;
-}) {
+function LaptopRepair(props: { translations: ITranslations; pathKey: string }) {
 	return <div>LaptopRepairContent</div>;
 }
 

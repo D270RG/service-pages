@@ -4,6 +4,9 @@ const sass = require('sass');
 
 module.exports = {
 	pageExtensions: ['tsx'],
+	images: {
+		disableStaticImages: true,
+	},
 	trailingSlash: true,
 	images: {
 		unoptimized: true,
@@ -39,6 +42,10 @@ module.exports = {
 				resourceQuery: { not: /url/ }, // exclude if *.svg?url
 				use: ['@svgr/webpack'],
 			}
+			// {
+			// 	test: /\.(gif|svg|jpg|png)$/,
+			// 	loader: 'file-loader',
+			// }
 		);
 
 		// Modify the file loader rule to ignore *.svg, since we have it handled now.
