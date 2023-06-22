@@ -122,7 +122,6 @@ const validationMiddleware = {
 				return;
 			}
 		}
-		console.log('passwordValidations check');
 		next();
 	},
 };
@@ -133,14 +132,12 @@ function writeCookie(res, req, login, session) {
 	res.setHeader('Login', login);
 	res.setHeader('Loggedin', 'true');
 	if (cookieLogin !== login || cookieSession !== session) {
-		console.log('rewriting');
 		res.cookie('login', login, { sameSite: 'none', secure: true, httpOnly: false });
 		res.cookie('sessionId', session, { sameSite: 'none', secure: true, httpOnly: false });
 	}
 	res.locals.session = true;
 	res.locals.login = login;
 	res.locals.session = session;
-	console.log('writing cookies to res');
 }
 function deleteCookie(res, req) {
 	res.removeHeader('Set-Cookie');
@@ -212,7 +209,6 @@ app.post(
 	[express.json(), authMiddleware.userNotExists, authMiddleware.password],
 	async (req, res, next) => {
 		let newSession = await db.addSession(req.body.login);
-		console.log('new session', newSession);
 		if (!newSession.affected) {
 			res.status(503).json({ error: 'databaseError' });
 		}
@@ -248,10 +244,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage, fileFilter, limits: 100000000 });
 app.post('/addFlyer', [accessMiddleware.mustBeAdmin, upload.single('file')], async (req, res) => {
 	if (!res.locals.session || !res.locals.admin) {
-		console.log('failing 503');
 		res.status(503).json({ error: 'notPermitted' });
 	}
-	console.log('body', req.body);
 	const flyerTitle = req.body.title;
 	const flyerText = req.body.text;
 	const language = req.body.language;
@@ -259,14 +253,12 @@ app.post('/addFlyer', [accessMiddleware.mustBeAdmin, upload.single('file')], asy
 	if (req.file) {
 		containsImage = true;
 	}
-	console.log(req.file.filename, req.file.filename.split('.')[0]);
 	let insertionResult = await db.addFlyer(
 		language,
 		flyerTitle,
 		flyerText,
 		req.file.filename.split('.')[0]
 	);
-	console.log('responding', insertionResult);
 	if (insertionResult.affected) {
 		res.status(200).json(JSON.stringify(insertionResult.flyers.rows));
 	} else {
@@ -279,11 +271,8 @@ app.post('/deleteFlyer', [express.json(), accessMiddleware.mustBeAdmin], async (
 	}
 	const id = req.body.id;
 	const language = req.body.language;
-	console.log('with id', req.body);
 	let deletionResult = await db.deleteFlyer(id, req.body.language);
-	console.log('deletionResult', deletionResult);
 	if (deletionResult.affected) {
-		console.log('unlinking');
 		fs.unlink(`./build/images/${id}.png`, async () => {
 			const flyers = await db.getFlyers(language);
 			res.status(200).json(JSON.stringify(flyers.rows));
@@ -296,10 +285,8 @@ app.use(express.static('./build/images/'));
 //READ
 app.post('/paths', express.json(), async (req, res) => {
 	let userGroupId = 'user';
-	console.log('checks', res.locals);
 	if (res.locals.session) {
 		userGroupId = await db.getGroupId(res.locals.login);
-		console.log('usergroupid', userGroupId);
 	}
 	let pathRows = await db.getPaths(userGroupId);
 	let resObject = {};
